@@ -1,0 +1,1 @@
+<p style="background-color: rgb(245, 123, 123); max-width: fit-content; border-radius: 7px">{{ $message }}</p>
