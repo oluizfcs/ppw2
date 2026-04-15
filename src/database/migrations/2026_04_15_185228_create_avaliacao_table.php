@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('produtos', function (Blueprint $table) {
-            $table->text('descricao')->nullable();
-            $table->boolean('ativo')->default(false);
+        Schema::create('avaliacao', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('filme_id');
+            $table->foreignId('usuario_id');
+            $table->unsignedTinyInteger('nota')->nullable(false);
+            $table->text('descricao')->nullable(false);
             $table->timestamps();
         });
     }
@@ -23,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('avaliacao');
     }
 };
