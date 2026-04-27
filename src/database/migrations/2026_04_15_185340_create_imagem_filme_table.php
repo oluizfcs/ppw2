@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('imagem_filme', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('filme_id');
-            $table->foreignId('imagem_id');
+            $table->foreignId('filme_id')->constrained('filme');
+            $table->foreignId('imagem_id')->constrained('imagem');
             $table->timestamps();
         });
     }

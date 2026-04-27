@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('avaliacao', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('filme_id');
-            $table->foreignId('usuario_id');
-            $table->unsignedTinyInteger('nota')->nullable(false);
-            $table->text('descricao')->nullable(false);
+            $table->foreignId('filme_id')->constrained('filme');
+            $table->foreignId('usuario_id')->constrained('users');
+            $table->unsignedTinyInteger('nota');
+            $table->text('descricao');
             $table->timestamps();
         });
     }

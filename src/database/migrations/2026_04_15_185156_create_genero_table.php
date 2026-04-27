@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('genero', function (Blueprint $table) {
             $table->id();
-            $table->string('nome', 45);
+            $table->string('nome', 45)->nullable();
             $table->timestamps();
         });
     }

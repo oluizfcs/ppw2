@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('estudio', function (Blueprint $table) {
             $table->id();
-            $table->string('nome', 45)->unique()->nullable(false);
+            $table->string('nome', 45)->unique();
             $table->string('local', 45);
             $table->timestamps();
         });

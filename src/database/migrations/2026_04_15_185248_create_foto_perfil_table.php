@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('foto_perfil', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('usuario_id');
-            $table->string('nome', 45)->nullable(false);
-            $table->string('caminho', 150)->nullable(false);
+            $table->foreignId('usuario_id')->constrained('users');
+            $table->string('nome', 45);
+            $table->string('caminho', 150);
             $table->timestamps();
         });
     }

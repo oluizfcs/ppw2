@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('pessoa', function (Blueprint $table) {
             $table->id();
-            $table->string('cpf', 45)->unique()->nullable(false);
-            $table->string('nome', 45)->nullable(false);
-            $table->date('data_nascimento')->nullable(false);
+            $table->string('cpf', 45)->unique();
+            $table->string('nome', 45);
+            $table->date('data_nascimento');
             $table->text('biografia');
             $table->string('genero', 10);
             $table->string('nacionalidade', 45);

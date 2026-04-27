@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('filme', function (Blueprint $table) {
             $table->id();
-            $table->string('nome', 45);
-            $table->unsignedSmallInteger('duracao');
-            $table->date('data_lancamento');
-            $table->string('classificacao', 45);
-            $table->text('sinopse');
+            $table->string('nome', 45)->nullable();
+            $table->unsignedSmallInteger('duracao')->nullable();
+            $table->date('data_lancamento')->nullable();
+            $table->string('classificacao', 45)->nullable();
+            $table->text('sinopse')->nullable();
             $table->timestamps();
         });
     }
