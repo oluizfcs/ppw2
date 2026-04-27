@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\FilmeController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProdutoController;
-use App\Models\Produto;
+// use App\Http\Controllers\ProdutoController;
+// use App\Models\Produto;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -12,8 +13,10 @@ Route::get('/', function () {
     return view('index');
 });
 
-Route::get('/produtos/caros', [ProdutoController::class, 'caros']);
-Route::resource('produtos', ProdutoController::class);
+// Route::get('/produtos/caros', [ProdutoController::class, 'caros']);
+// Route::resource('produtos', ProdutoController::class);
+
+Route::resource('filmes', FilmeController::class);
 
 // Route::get('/ping', function () {
 //     return response()->json(['status' => 'ok', 'version' => 1.0]);
