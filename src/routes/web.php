@@ -8,7 +8,7 @@ Route::resource('filmes', FilmeController::class)
     ->middleware('auth');
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
 
 Route::get('/dashboard', function () {
