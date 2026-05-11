@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('filme_id')->constrained('filme');
             $table->foreignId('imagem_id')->constrained('imagem');
+            $table->boolean('poster')->default(false);
             $table->timestamps();
         });
     }

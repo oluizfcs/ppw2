@@ -54,6 +54,25 @@
     
     <main>
         {{-- Aqui será inserido o conteúdo de cada página --}}
+        <div class="container mt-2">
+            @session('error')
+                <div class="alert alert-danger" role="alert">
+                    {{ $value }}
+                </div>
+            @endsession
+            @if ($errors->any())
+                @foreach ($errors->all() as $error)
+                    <div class="alert alert-danger" role="alert">
+                        {{ $error }}
+                    </div>
+                @endforeach
+            @endif
+            @session('success')
+                <div class="alert alert-success" role="alert">
+                    {{ $value }}
+                </div>
+            @endsession       
+        </div>
         @yield('conteudo')
     </main>
 
