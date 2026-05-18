@@ -13,6 +13,8 @@ services:
     build:
       context: .
       dockerfile: ./docker/php/Dockerfile
+    ports:
+      - "5173:5173"
     volumes:
       - ./src/app:/var/www/html/app
       - ./src/bootstrap:/var/www/html/bootstrap

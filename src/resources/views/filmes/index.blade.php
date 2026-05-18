@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('titulo', 'Sistema - Início')
+@section('titulo', 'Moviestar - Filmes')
 
 @section('conteudo')
     <div class="container">
