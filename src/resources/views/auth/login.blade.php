@@ -10,7 +10,7 @@
                 <form action="/login" method="POST" class="card p-5 needs-validation bg-dark" novalidate>
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="email" name="email" value="{{ old('email') }}"
-                            pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" required placeholder="seu@email.com">
+                            pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" autofocus required placeholder="seu@email.com">
                         <label for="email">Email</label>
                     </div>
                     <div class="form-floating mb-3">
@@ -19,7 +19,8 @@
                         <label for="password">Senha</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input mb-3" type="checkbox" value="" id="remember_me" name="remember">
+                        <input class="form-check-input mb-3" type="checkbox" value="" id="remember_me"
+                            name="remember">
                         <label class="form-check-label" for="remember_me">
                             Lembre-se de mim
                         </label>

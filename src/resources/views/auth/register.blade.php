@@ -9,8 +9,8 @@
                 <div class="display-4 text-center mb-2">Cadastrar</div>
                 <form action="/register" method="POST" class="card p-5 needs-validation bg-dark" novalidate>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}"
-                            required placeholder>
+                        <input type="text" class="form-control" id="name" autofocus name="name"
+                            value="{{ old('name') }}" required placeholder>
                         <label for="name">Nome</label>
                     </div>
                     <div class="form-floating mb-3">

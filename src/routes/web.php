@@ -8,9 +8,6 @@ Route::get('/', function () {
     return view('index');
 });
 
-Route::get('/filmes', [FilmeController::class, 'index']);
-Route::get('/filmes/{id}', [FilmeController::class, 'show']);
-
 Route::middleware('auth')->group(function () {
     Route::resource('filmes', FilmeController::class)
         ->except('index', 'show');
@@ -19,6 +16,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/filmes', [FilmeController::class, 'index']);
+Route::get('/filmes/{id}', [FilmeController::class, 'show']);
 
 Route::get('/admin', function () {
     return view('admin');
