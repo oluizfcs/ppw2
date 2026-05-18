@@ -7,7 +7,7 @@
         <a class="btn btn-primary" href="/filmes/create">Cadastrar filme</a>
 
         <div class="row g-3">
-            @foreach ($filmes as $filme)
+            @forelse ($filmes as $filme)
             <div class="col-md-3">
                 <a href="/filmes/{{ $filme->id }}">
                 <div class="card mb-2">
@@ -24,7 +24,11 @@
                 </div>
                 </a>
             </div>
-            @endforeach
+            @empty
+                <p>Nenhum filme encontrado.</p>
+            @endforelse
+            <div class="d-flex justify-content-center mt-4">
+                {{ $filmes->links() }}
+            </div>
         </div>
-    </div>
 @endsection

@@ -8,7 +8,9 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
@@ -30,7 +32,7 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
+        $dados = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', 'min:3'], // Rules\Password::defaults()
@@ -41,6 +43,26 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        if ($request->hasFile('foto_perfil')) {
+            $caminho = $request->file('foto_perfil')->store('profiles', 'public');
+            $dados['foto_perfil_url'] = $caminho;
+
+            try {
+                DB::transaction(function () use ($user, $dados) {
+                    DB::table('foto_perfil')->insert([
+                        'usuario_id' => $user->id,
+                        'nome' => $user->name,
+                        'caminho' => $dados['foto_perfil_url']
+                    ]);
+                });
+            } catch(\Exception $e) {
+                if ($caminho) {
+                    Storage::disk('public')->delete($caminho);
+                }
+                return back()->with('error', 'Erro ao cadastrar usuário. Tente novamente.');
+            }
+        }
 
         event(new Registered($user));
 

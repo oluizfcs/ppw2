@@ -18,7 +18,7 @@ class FilmeController extends Controller
     {
         $filmes = Filme::with(['imagens' => function ($query) {
             $query->wherePivot('poster', true);
-        }])->get();
+        }])->paginate(2);
 
         // $filmes = Filme::with('imagens')->get();
 
