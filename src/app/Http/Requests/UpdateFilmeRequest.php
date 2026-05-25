@@ -26,7 +26,8 @@ class UpdateFilmeRequest extends FormRequest
             'nome' => 'required|string|min:2|max:255',
             'duracao' => 'required|integer|min:1',
             'sinopse' => 'nullable|string|max:2000',
-            'data_lancamento' => 'required|integer|min:1888',
+            'classificacao' => 'nullable|string|max:45',
+            'data_lancamento' => 'required|date|date_format:Y-m-d',
             'poster' => 'sometimes|image|mimes:jpeg,png,webp|max:2048'
         ];
     }

@@ -9,16 +9,15 @@ Route::get('/', function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::resource('filmes', FilmeController::class)
-        ->except('index', 'show');
+    Route::resource('filmes', FilmeController::class);
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/filmes', [FilmeController::class, 'index']);
-Route::get('/filmes/{id}', [FilmeController::class, 'show']);
+// Route::get('/filmes', [FilmeController::class, 'index']);
+// Route::get('/filmes/{id}', [FilmeController::class, 'show']);
 
 Route::get('/admin', function () {
     return view('admin');

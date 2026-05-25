@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreFilmeRequest;
+use App\Http\Requests\UpdateFilmeRequest;
 use App\Models\Filme;
 use Exception;
 use Illuminate\Http\Request;
@@ -42,19 +43,24 @@ class FilmeController extends Controller
     public function store(StoreFilmeRequest $request)
     {
         $dados = $request->validated();
-        $caminho = null;
+        $imagens = $request->file('imagens', []);
 
-        if ($request->hasFile('poster')) {
-            $caminho = $request->file('poster')->store('posters', 'public');
-            $dados['poster_url'] = $caminho;
+        $caminhoPoster = $request->file('poster')->store('posters', 'public');
+        $caminhosImagens = [];
+
+        foreach($imagens as $imagem) {
+            $caminhosImagens[] = $imagem->store('imagens', 'public');
         }
 
+        $dados['caminho_poster'] = $caminhoPoster;
+        $dados['caminhos_imagens'] = $caminhosImagens;
+        
         try {
             DB::transaction(function () use ($dados) {
                 $filme = Filme::create($dados);
 
                 $imagem_id = DB::table('imagem')->insertGetId([
-                    'caminho' => $dados['poster_url'],
+                    'caminho' => $dados['caminho_poster'],
                     'nome' => $filme->nome
                 ]);
 
@@ -63,11 +69,24 @@ class FilmeController extends Controller
                     'imagem_id' => $imagem_id,
                     'poster' => true
                 ]);
+
+                foreach($dados['caminhos_imagens'] as $caminhoImagem) {
+                    $imagem_id = DB::table('imagem')->insertGetId([
+                        'caminho' => $caminhoImagem,
+                        'nome' => $filme->nome
+                    ]);
+
+                    DB::table("imagem_filme")->insert([
+                        'filme_id' => $filme->id,
+                        'imagem_id' => $imagem_id,
+                        'poster' => false
+                    ]);
+                }
             });
         } catch(Exception $e) {
-            if ($caminho) {
-                Storage::disk('public')->delete($caminho);
-            }
+            Storage::disk('public')->delete($caminhoPoster);
+            Storage::disk('public')->delete($caminhosImagens);
+
             return back()->with('error', 'Erro ao salvar o filme. Tente novamente.');
         }
 
@@ -80,9 +99,12 @@ class FilmeController extends Controller
     public function show(string $id)
     {
         // $filme = Filme::findOrFail($id);
-        $filme = Filme::with(['imagens' => function ($query) {
-            $query->wherePivot('poster', true);
-        }])->findOrFail($id);
+
+        // $filme = Filme::with(['imagens' => function ($query) {
+        //     $query->wherePivot('poster', true);
+        // }])->findOrFail($id);
+
+        $filme = Filme::with('imagens')->findOrFail($id);
 
         $avaliacoes = $filme->avaliacoes()->with('usuario')
         ->orderBy('created_at', 'desc')
@@ -96,15 +118,27 @@ class FilmeController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('filmes.edit', ['filme' => Filme::findOrFail($id)]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateFilmeRequest $request, string $id)
     {
-        //
+        $dados = $request->validated();
+
+        $filme = Filme::findOrFail($id);
+
+        $filme->nome = $dados['nome'];
+        $filme->sinopse = $dados['sinopse'];
+        $filme->duracao = $dados['duracao'];
+        $filme->data_lancamento = $dados['data_lancamento'];
+        $filme->classificacao = $dados['classificacao'];
+
+        $filme->save();
+
+        return redirect('/filmes')->with('success', 'Filme atualizado com sucesso!');
     }
 
     /**
@@ -112,6 +146,10 @@ class FilmeController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        abort(501, 'É preciso excluir todas as imagens do banco e do storage antes de excluir o filme.');
+        
+        Filme::findOrFail($id)->delete();
+
+        return redirect('/filmes')->with('success', 'Filme excluído');
     }
 }

@@ -20,6 +20,17 @@
             </div>
         </div>
 
+        <div class="row mt-3">
+            <div class="display-4">Imagens</div>
+            @forelse ($filme->imagens as $imagem)
+                <div class="col">
+                    <img src="{{ asset('storage/' . $imagem->caminho) }}" alt="" width="200px">
+                </div>
+            @empty
+                Nennhuma imagem cadastrada.
+            @endforelse
+        </div>
+
         <div class="container mt-5"> 
             <h1>Avaliações:</h1>
             <select name="stars" id="stars">

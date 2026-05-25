@@ -20,6 +20,12 @@
                         <p class="mb-0">Duração: {{ $filme->duracao }}</p>
                         <p class="mb-0">Classificação: {{ $filme->classificacao }}</p>
                         <small class="text-muted">{{ $filme->data_lancamento }}</small> --}}
+                        <a href="/filmes/{{ $filme->id }}/edit" class="btn btn-secondary">Editar</a>
+                        <form action="/filmes/{{ $filme->id }}" method="post">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">Excluir</button>
+                        </form>
                     </div>
                 </div>
                 </a>

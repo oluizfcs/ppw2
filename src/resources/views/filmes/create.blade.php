@@ -1,36 +1,45 @@
 @extends('layouts.app')
 
-@section('titulo', 'Sistema - Início')
+@section('titulo', 'Cadastrar Filme')
 
 @section('conteudo')
-    <div class="container">
-        <form action='/filmes' method="POST" enctype="multipart/form-data">
-        @csrf
-        <div class="form-group">
-            <label for="nome">Nome:</label>
-            <input type="text" class="form-control" id="nome" name="nome" value="{{ old('nome') }}">
+    <div class="container mt-5 min-vh-100">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12">
+                <div class="display-4 text-center mb-2">Cadastrar Filme</div>
+                <form action='/filmes' method="POST" enctype="multipart/form-data" class="card p-5 needs-validation bg-dark" novalidate>
+                    @csrf
+                    @include('filmes/form')
+                    <label for="campos-imagem">Outras imagens</label>
+                    <div id="campos-imagem"></div>
+                    <button type="button" id="btn-adicionar" class="btn btn-secondary">Adicionar Imagem</button>
+                    <button type="submit" class="btn btn-primary mt-2">Cadastrar Filme</button>
+                </form>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="sinopse">Sinopse</label>
-            <textarea class="form-control" id="sinopse" name="sinopse">{{ old('sinopse') }}</textarea>
-        </div>
-        <div class="form-group">
-            <label for="duracao">Duração em segundos:</label>
-            <input type="number" class="form-control" id="duracao" name="duracao" value="{{ old('duracao') }}">
-        </div>
-        <div class="form-group">
-            <label for="data_lancamento">Data de lançamento</label>
-            <input type="date" class="form-control" id="data_lancamento" name="data_lancamento" value="{{ old('data_lancamento') }}">
-        </div>
-        <div class="form-group">
-            <label for="classificacao">Classificação</label>
-            <input type="text" class="form-control" id="classificacao" name="classificacao" value="{{ old('classificacao') }}">
-        </div>
-        <div class="form-group">
-            <label for="poster">Poster</label>
-            <input type="file" class="form-control" id="poster" name="poster" value="{{ old('poster') }}">
-        </div>
-        <button type="submit" class="btn btn-primary mt-2">Cadastrar Filme</button>
-        </form>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    const container = document.getElementById('campos-imagem');
+    const btnAdicionar = document.getElementById('btn-adicionar');
+    let indice = 1;
+    const MAX_FOTOS = 5;
+    btnAdicionar.addEventListener('click', () => {
+        if (indice > MAX_FOTOS) {
+            alert('Máximo de ' + MAX_FOTOS + ' imagens.');
+            return;
+        }
+        const div = document.createElement('div');
+        div.className = 'campo-imagem mb-2 d-flex align-items-center gap-2';
+        div.innerHTML = `
+            <input type="file" name="imagens[]" class="form-control"
+            accept="image/jpeg,image/png,image/webp">
+            <button type="button" class="btn btn-sm btn-outline-danger"
+            onclick="this.closest('.campo-imagem').remove(); indice--;">✕</button>`;
+        container.appendChild(div);
+        indice++;
+    });
+    </script>
+@endpush

@@ -12,7 +12,7 @@
                     <a href="/" class="nav-link px-2 link-body-emphasis">Home</a>
                 </li>
                 <li>
-                    <a href="filmes" class="nav-link px-2 link-body-emphasis">Filmes</a>
+                    <a href="/filmes" class="nav-link px-2 link-body-emphasis">Filmes</a>
                 </li>
                 <li>
                     <a href="#" class="nav-link px-2 link-body-emphasis">Pessoas</a>
