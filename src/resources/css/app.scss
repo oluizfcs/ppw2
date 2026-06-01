@@ -6,6 +6,23 @@ $dark: #1a1a1a;
 
 @import "bootstrap/scss/bootstrap";
 
+$ts-pristine-bg: $input-bg;
+$ts-select-bg: $input-bg;
+$ts-tag-bg: $primary;
+$ts-tag-color: $white;
+$ts-tag-border: 1px solid darkene($primary, 10%);
+
+
+@import "tom-select/src/scss/tom-select.bootstrap5";
+
+* {
+    color: #fff;
+}
+
+.ts-control input {
+    color: #fff;
+}
+
 @font-face {
     font-family: Bigbesty;
     src: url('../fonts/Bigbesty.otf');

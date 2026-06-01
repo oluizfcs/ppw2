@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -39,8 +40,8 @@ class Pessoa extends Model
         return $this->hasOne(Escritor::class);
     }
 
-    public function imagens(): HasMany
+    public function imagens(): BelongsToMany
     {
-        return $this->hasMany(Imagem::class);
+        return $this->belongsToMany(Imagem::class, 'imagem_pessoa')->withTimestamps();
     }
 }

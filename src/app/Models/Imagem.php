@@ -15,9 +15,9 @@ class Imagem extends Model
         'nome'
     ];
 
-    public function pessoa(): BelongsTo
+    public function pessoa(): BelongsToMany
     {
-        return $this->belongsTo(Pessoa::class);
+        return $this->belongsToMany(Pessoa::class, 'imagem_pessoa')->withTimestamps();
     }
 
     public function filmes(): BelongsToMany
@@ -27,6 +27,6 @@ class Imagem extends Model
 
     public function estudios(): BelongsToMany
     {
-        return $this->belongsToMany(Imagem::class, 'imagem_estudio');
+        return $this->belongsToMany(Estudio::class, 'imagem_estudio')->withTimestamps();
     }
 }

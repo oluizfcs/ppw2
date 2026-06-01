@@ -1,5 +1,5 @@
 <div class="col-md-3">
-    <div class="card mb-2 bg-dark">
+    <div class="card mb-2 bg-dark border-secondary">
         <div class="card-body">
             <div class="row fs-3">
                 <div class="col">{{ $avaliacao['filme'] }}</div>

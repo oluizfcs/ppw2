@@ -1,6 +1,7 @@
 # Instruções para rodar este projeto
 > **Atenção (Usuários Windows)**
 > Antes de começar, certifique-se de que o arquivo `docker/php/start-container.sh` está configurado para usar quebras de linha **LF** (e não CRLF). Caso contrário, o container PHP não vai iniciar.
+> Talvez você precise executar `php artisan storage:link` manualmente.
 1. **Arquivo .env**
 ```bash
 cp .env.example .env
