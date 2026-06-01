@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AvaliacaoController;
 use App\Http\Controllers\EstudioController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +16,7 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     Route::resource('filmes', FilmeController::class);
     Route::resource('generos', GeneroController::class);
+    Route::get('/pessoas/buscar', [PessoaController::class, 'buscar']);
     Route::resource('pessoas', PessoaController::class);
     Route::resource('estudios', EstudioController::class);
     Route::get('/buscar', [FilmeController::class, 'buscar'])->name('buscar');
@@ -28,8 +30,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Route::get('/filmes', [FilmeController::class, 'index']);
-// Route::get('/filmes/{id}', [FilmeController::class, 'show']);
+Route::get('/filme/{id}', [FilmeController::class, 'detalhar']);
+Route::get('/filmes/{id}/avaliacoes', [AvaliacaoController::class, 'index']);
 
 Route::get('/admin', function () {
     return view('admin');

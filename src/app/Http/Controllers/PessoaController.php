@@ -162,4 +162,33 @@ class PessoaController extends Controller
 
         return redirect('/pessoas')->with('success', 'Pessoa excluída com sucesso!');
     }
+
+    public function buscar(Request $request)
+    {
+        $termo = trim($request->input('q', ''));
+        $filmeId = $request->input('filme_id');
+        if (strlen($termo) < 2) {
+            return response()->json([]);
+        }
+        $pessoas = Pessoa::with('imagens')
+            ->where('nome', 'ilike', "%{$termo}%")
+            ->limit(8)
+            ->get(['id', 'nome']);
+        // Indica quais tipos de vínculo a pessoa já tem no filme
+        return response()->json($pessoas->map(function ($p) use ($filmeId) {
+            $vinculos = [];
+            if ($filmeId) {
+                if ($p->ator?->filmes()->where('filme_id', $filmeId)->exists())
+                    $vinculos[] = 'ator';
+                if ($p->diretor?->filmes()->where('filme_id', $filmeId)->exists())
+                    $vinculos[] = 'diretor';
+            }
+            return [
+                'id' => $p->id,
+                'nome' => $p->nome,
+                'foto' => $p->foto_url,
+                'vinculos' => $vinculos
+            ];
+        }));
+    }
 }

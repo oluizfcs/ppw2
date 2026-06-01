@@ -34,16 +34,36 @@ class UpdateFilmeRequest extends FormRequest
             'generos' => 'required|array|min:1',
             'estudios' => 'sometimes|array',
             'estudios.*' => 'exists:estudio,id',
-            'diretores' => 'sometimes|array',
-            'diretores.*' => 'exists:pessoa,id',
-            'produtores' => 'sometimes|array',
-            'produtores.*' => 'exists:pessoa,id',
-            'escritores' => 'sometimes|array',
-            'escritores.*' => 'exists:pessoa,id',
-            'atores' => 'sometimes|array',
-            'atores.*' => 'exists:pessoa,id',
-            'papeis' => 'sometimes|array',
-            'papeis.*' => 'required|string|max:45'
+            // 'diretores' => 'sometimes|array',
+            // 'diretores.*' => 'exists:pessoa,id',
+            // 'produtores' => 'sometimes|array',
+            // 'produtores.*' => 'exists:pessoa,id',
+            // 'escritores' => 'sometimes|array',
+            // 'escritores.*' => 'exists:pessoa,id',
+            // 'atores' => 'sometimes|array',
+            // 'atores.*' => 'exists:pessoa,id',
+            // 'papeis' => 'sometimes|array',
+            // 'papeis.*' => 'required|string|max:45'
+
+            'vinculos' => 'nullable|array',
+            'vinculos.*.pessoa_id' => 'required_with:vinculos|integer|exists:pessoa,id',
+            'vinculos.*.tipo' => 'required_with:vinculos|in:ator,diretor,produtor,escritor',
+            'vinculos.*.papel' => 'sometimes|max:100',
+
+
+            'remover_vinculos' => 'nullable|array',
+            'remover_vinculos.atores' => 'nullable|array',
+            'remover_vinculos.atores.*' => 'integer|exists:ator,id',
+            'remover_vinculos.diretores' => 'nullable|array',
+            'remover_vinculos.diretores.*' => 'integer|exists:diretor,id',
+            'remover_vinculos.produtores' => 'nullable|array',
+            'remover_vinculos.produtores.*' => 'integer|exists:produtor,id',
+            'remover_vinculos.escritores' => 'nullable|array',
+            'remover_vinculos.escritores.*' => 'integer|exists:escritor,id',
+            
+            'atores_existentes' => 'nullable|array',
+            'atores_existentes.*.papel' => 'sometimes|max:100',
+
         ];
     }
 }

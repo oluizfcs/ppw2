@@ -70,7 +70,7 @@ class FilmeController extends Controller
         $dados['caminhos_imagens'] = $caminhosImagens;
 
         try {
-            DB::transaction(function () use ($dados) {
+            DB::transaction(function () use ($dados, $request) {
                 $filme = Filme::create($dados);
 
                 $poster = Imagem::create([
@@ -105,48 +105,50 @@ class FilmeController extends Controller
                     $filme->estudios()->sync($dados['estudios']);
                 }
 
-                $diretorIds = [];
-                if (!empty($dados['diretores'])) {
-                    foreach ($dados['diretores'] as $pessoaId) {
-                        $diretor = Diretor::firstOrCreate(['pessoa_id' => $pessoaId]);
-                        $diretorIds[] = $diretor->id;
-                    }
-                }
-                $filme->diretores()->sync($diretorIds);
+                $this->sincronizarVinculos($filme, $request->input('vinculos', []));
 
-                $produtorIds = [];
-                if (!empty($dados['produtores'])) {
-                    foreach ($dados['produtores'] as $pessoaId) {
-                        $produtor = Produtor::firstOrCreate(['pessoa_id' => $pessoaId]);
-                        $produtorIds[] = $produtor->id;
-                    }
-                }
-                $filme->produtores()->sync($produtorIds);
+                // $diretorIds = [];
+                // if (!empty($dados['diretores'])) {
+                //     foreach ($dados['diretores'] as $pessoaId) {
+                //         $diretor = Diretor::firstOrCreate(['pessoa_id' => $pessoaId]);
+                //         $diretorIds[] = $diretor->id;
+                //     }
+                // }
+                // $filme->diretores()->sync($diretorIds);
 
-                $escritorIds = [];
-                if (!empty($dados['escritores'])) {
-                    foreach ($dados['escritores'] as $pessoaId) {
-                        $escritor = Escritor::firstOrCreate(['pessoa_id' => $pessoaId]);
-                        $escritorIds[] = $escritor->id;
-                    }
-                }
-                $filme->escritores()->sync($escritorIds);
+                // $produtorIds = [];
+                // if (!empty($dados['produtores'])) {
+                //     foreach ($dados['produtores'] as $pessoaId) {
+                //         $produtor = Produtor::firstOrCreate(['pessoa_id' => $pessoaId]);
+                //         $produtorIds[] = $produtor->id;
+                //     }
+                // }
+                // $filme->produtores()->sync($produtorIds);
 
-                $atoresSync = [];
-                if (!empty($dados['atores'])) {
-                    foreach ($dados['atores'] as $pessoaId) {
-                        $ator = Ator::firstOrCreate(['pessoa_id' => $pessoaId]);
-                        $papel = $dados['papeis'][$pessoaId] ?? 'Coadjuvante';
-                        $atoresSync[$ator->id] = ['papel' => $papel];
-                    }
-                }
-                $filme->atores()->sync($atoresSync);
+                // $escritorIds = [];
+                // if (!empty($dados['escritores'])) {
+                //     foreach ($dados['escritores'] as $pessoaId) {
+                //         $escritor = Escritor::firstOrCreate(['pessoa_id' => $pessoaId]);
+                //         $escritorIds[] = $escritor->id;
+                //     }
+                // }
+                // $filme->escritores()->sync($escritorIds);
+
+                // $atoresSync = [];
+                // if (!empty($dados['atores'])) {
+                //     foreach ($dados['atores'] as $pessoaId) {
+                //         $ator = Ator::firstOrCreate(['pessoa_id' => $pessoaId]);
+                //         $papel = $dados['papeis'][$pessoaId] ?? 'Coadjuvante';
+                //         $atoresSync[$ator->id] = ['papel' => $papel];
+                //     }
+                // }
+                // $filme->atores()->sync($atoresSync);
             });
         } catch (Exception $e) {
             Storage::disk('public')->delete($caminhoPoster);
             Storage::disk('public')->delete($caminhosImagens);
 
-            return back()->with('error', 'Erro ao salvar o filme. Tente novamente.');
+            return back()->with('error', 'Erro ao salvar o filme. Tente novamente.' . $e->getMessage());
         }
 
         return redirect('/filmes')->with('success', 'Filme cadastrado!');
@@ -174,6 +176,27 @@ class FilmeController extends Controller
             ->get();
 
         return view('filmes.show', compact('filme', 'avaliacoes', 'generos', 'estudios'));
+    }
+
+    public function detalhar(string $id)
+    {
+        $filme = Filme::with([
+            'imagens',
+            'diretores.pessoa',
+            'produtores.pessoa',
+            'escritores.pessoa',
+            'atores.pessoa.imagens',
+            'estudios'
+        ])->findOrFail($id);
+
+        $generos = array_map('ucfirst', $filme->generos->pluck('nome')->toArray());
+        $estudios = $filme->estudios->pluck('nome')->toArray();
+
+        $avaliacoes = $filme->avaliacoes()->with('usuario')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('filmes.detalhar', compact('filme', 'avaliacoes', 'generos', 'estudios'));
     }
 
     /**
@@ -242,7 +265,7 @@ class FilmeController extends Controller
         $dados['caminhos_imagens'] = $caminhosImagens;
 
         try {
-            DB::transaction(function () use ($filme, $dados) {
+            DB::transaction(function () use ($filme, $dados, $request) {
                 $filme->update($dados);
 
                 if ($dados['caminho_poster']) {
@@ -287,42 +310,57 @@ class FilmeController extends Controller
                     $filme->estudios()->sync($dados['estudios'] ?? []);
                 }
 
-                $diretorIds = [];
-                if (!empty($dados['diretores'])) {
-                    foreach ($dados['diretores'] as $pessoaId) {
-                        $diretor = Diretor::firstOrCreate(['pessoa_id' => $pessoaId]);
-                        $diretorIds[] = $diretor->id;
-                    }
-                }
-                $filme->diretores()->sync($diretorIds);
+                // $diretorIds = [];
+                // if (!empty($dados['diretores'])) {
+                //     foreach ($dados['diretores'] as $pessoaId) {
+                //         $diretor = Diretor::firstOrCreate(['pessoa_id' => $pessoaId]);
+                //         $diretorIds[] = $diretor->id;
+                //     }
+                // }
+                // $filme->diretores()->sync($diretorIds);
 
-                $produtorIds = [];
-                if (!empty($dados['produtores'])) {
-                    foreach ($dados['produtores'] as $pessoaId) {
-                        $produtor = Produtor::firstOrCreate(['pessoa_id' => $pessoaId]);
-                        $produtorIds[] = $produtor->id;
-                    }
-                }
-                $filme->produtores()->sync($produtorIds);
+                // $produtorIds = [];
+                // if (!empty($dados['produtores'])) {
+                //     foreach ($dados['produtores'] as $pessoaId) {
+                //         $produtor = Produtor::firstOrCreate(['pessoa_id' => $pessoaId]);
+                //         $produtorIds[] = $produtor->id;
+                //     }
+                // }
+                // $filme->produtores()->sync($produtorIds);
 
-                $escritorIds = [];
-                if (!empty($dados['escritores'])) {
-                    foreach ($dados['escritores'] as $pessoaId) {
-                        $escritor = Escritor::firstOrCreate(['pessoa_id' => $pessoaId]);
-                        $escritorIds[] = $escritor->id;
-                    }
-                }
-                $filme->escritores()->sync($escritorIds);
+                // $escritorIds = [];
+                // if (!empty($dados['escritores'])) {
+                //     foreach ($dados['escritores'] as $pessoaId) {
+                //         $escritor = Escritor::firstOrCreate(['pessoa_id' => $pessoaId]);
+                //         $escritorIds[] = $escritor->id;
+                //     }
+                // }
+                // $filme->escritores()->sync($escritorIds);
 
-                $atoresSync = [];
-                if (!empty($dados['atores'])) {
-                    foreach ($dados['atores'] as $pessoaId) {
-                        $ator = Ator::firstOrCreate(['pessoa_id' => $pessoaId]);
-                        $papel = $dados['papeis'][$pessoaId] ?? 'Coadjuvante';
-                        $atoresSync[$ator->id] = ['papel' => $papel];
+                // $atoresSync = [];
+                // if (!empty($dados['atores'])) {
+                //     foreach ($dados['atores'] as $pessoaId) {
+                //         $ator = Ator::firstOrCreate(['pessoa_id' => $pessoaId]);
+                //         $papel = $dados['papeis'][$pessoaId] ?? 'Coadjuvante';
+                //         $atoresSync[$ator->id] = ['papel' => $papel];
+                //     }
+                // }
+                // $filme->atores()->sync($atoresSync);
+
+                // 1. Remover vínculos marcados
+                foreach ($request->input('remover_vinculos', []) as $relacao => $ids) {
+                    if (in_array($relacao, ['atores', 'diretores', 'produtores', 'escritores'])) {
+                        $filme->$relacao()->detach($ids);
                     }
                 }
-                $filme->atores()->sync($atoresSync);
+                // 2. Atualizar personagem dos atores existentes
+                foreach ($request->input('atores_existentes', []) as $atorId => $dados) {
+                    $filme->atores()->updateExistingPivot($atorId, [
+                        'papel' => $dados['papel'] ?? 'Sem Papel'
+                    ]);
+                }
+                // 3. Adicionar novos vínculos (mesmo método do store)
+                $this->sincronizarVinculos($filme, $request->input('vinculos', []));
             });
         } catch (Exception $e) {
             if (!empty($caminhosImagens)) {
@@ -417,5 +455,37 @@ class FilmeController extends Controller
             ->get();
 
         return view('busca', compact('query', 'filmes', 'diretores', 'atores', 'escritores', 'produtores', 'estudios'));
+    }
+
+    private function sincronizarVinculos(Filme $filme, array $vinculos): void
+    {
+        foreach ($vinculos as $v) {
+            $pessoaId = $v['pessoa_id'] ?? null;
+            $tipo = $v['tipo'] ?? null;
+            $papel = $v['papel'] ?? null;
+            if (!$pessoaId || !$tipo) continue;
+
+            switch ($tipo) {
+                case 'ator':
+                    $ator = Ator::firstOrCreate(['pessoa_id' => $pessoaId]);
+
+                    $filme->atores()->syncWithoutDetaching([
+                        $ator->id => ['papel' => $papel]
+                    ]);
+                    break;
+                case 'diretor':
+                    $diretor = Diretor::firstOrCreate(['pessoa_id' => $pessoaId]);
+                    $filme->diretores()->syncWithoutDetaching([$diretor->id]);
+                    break;
+                case 'produtor':
+                    $produtor = Produtor::firstOrCreate(['pessoa_id' => $pessoaId]);
+                    $filme->produtores()->syncWithoutDetaching([$produtor->id]);
+                    break;
+                case 'escritor':
+                    $escritor = Escritor::firstOrCreate(['pessoa_id' => $pessoaId]);
+                    $filme->escritores()->syncWithoutDetaching([$escritor->id]);
+                    break;
+            }
+        }
     }
 }
