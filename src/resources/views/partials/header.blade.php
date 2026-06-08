@@ -1,28 +1,32 @@
 <header class="p-3 border-bottom bg-dark sticky-md-top">
     <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-evenly">
             <a id="logo-link" href="/"
                 class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
                 <img src="{{ asset('images/star.svg') }}" class="me-1 mb-2" width="32px" height="32px" alt="brand logo">
                 <span class="brand-name me-2"><span id="movie">Movie</span><span id="star">star</span></span>
             </a>
-            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li>
-                    <a href="/" class="nav-link px-2 link-body-emphasis">Home</a>
-                </li>
-                <li>
-                    <a href="/filmes" class="nav-link px-2 link-body-emphasis">Filmes</a>
-                </li>
-                <li>
-                    <a href="/pessoas" class="nav-link px-2 link-body-emphasis">Pessoas</a>
-                </li>
-                <li>
-                    <a href="/generos" class="nav-link px-2 link-body-emphasis">Gêneros</a>
-                </li>
-                <li>
-                    <a href="/estudios" class="nav-link px-2 link-body-emphasis">Estúdios</a>
-                </li>
-            </ul>
+            @auth
+                @if (Auth::user()->isAdmin())
+                    <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                        <li>
+                            <a href="/" class="nav-link px-2 link-body-emphasis">Home</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.filmes.index') }}" class="nav-link px-2 link-body-emphasis">Filmes</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.pessoas.index') }}" class="nav-link px-2 link-body-emphasis">Pessoas</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.generos.index') }}" class="nav-link px-2 link-body-emphasis">Gêneros</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.estudios.index') }}" class="nav-link px-2 link-body-emphasis">Estúdios</a>
+                        </li>
+                    </ul>
+                @endif
+            @endauth
             <form action="/buscar" method="GET" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
                 <input type="search" name="search" value="{{ request('search') }}" class="form-control" placeholder="Pesquisar..." aria-label="Search">
             </form>

@@ -7,9 +7,9 @@
         <div class="row justify-content-center">
             <div class="col-md-6 col-sm-12">
                 <div class="display-4 text-center mb-2">Cadastrar Pessoa</div>
-                <form action='/pessoas' method="POST" enctype="multipart/form-data" class="card p-5 needs-validation bg-dark" novalidate>
+                <form action='{{ route('admin.pessoas.store') }}' method="POST" enctype="multipart/form-data" class="card p-5 needs-validation bg-dark" novalidate>
                     @csrf
-                    @include('pessoas/form')
+                    @include('admin/pessoas/form')
                     <button type="submit" class="btn btn-primary mt-2">Cadastrar Pessoa</button>
                 </form>
             </div>

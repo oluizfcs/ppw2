@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\StoreEstudioRequest;
 use App\Http\Requests\UpdateEstudioRequest;
@@ -20,7 +20,7 @@ class EstudioController extends Controller
     {
         $estudios = Estudio::with('imagens')->paginate(4);
 
-        return view('estudios.index', compact('estudios'));
+        return view('admin.estudios.index', compact('estudios'));
     }
 
     /**
@@ -28,7 +28,7 @@ class EstudioController extends Controller
      */
     public function create()
     {
-        return view('estudios.create');
+        return view('admin.estudios.create');
     }
 
     /**
@@ -48,26 +48,26 @@ class EstudioController extends Controller
 
         $dados['caminhos_imagens'] = $caminhosImagens;
 
+        DB::beginTransaction();
         try {
-            DB::transaction(function () use ($dados) {
-                $estudio = Estudio::create($dados);
+            $estudio = Estudio::create($dados);
 
-                foreach ($dados['caminhos_imagens'] as $caminhoImagem) {
-                    $imagem = Imagem::create([
-                        'caminho' => $caminhoImagem,
-                        'nome' => $estudio->nome
-                    ]);
+            foreach ($dados['caminhos_imagens'] as $caminhoImagem) {
+                $imagem = Imagem::create([
+                    'caminho' => $caminhoImagem,
+                    'nome' => $estudio->nome
+                ]);
 
-                    $estudio->imagens()->attach($imagem->id);
-                }
-            });
+                $estudio->imagens()->attach($imagem->id);
+            }
+            DB::commit();
         } catch (Exception $e) {
             Storage::disk('public')->delete($caminhosImagens);
-
+            DB::rollBack();
             return back()->with('error', 'Erro ao salvar o estúdio. Tente novamente: ' . $e->getMessage());
         }
-
-        return redirect('/estudios')->with('success', 'Estúdio cadastrado com sucesso!');
+        
+        return redirect(route('admin.estudios.show', $estudio->id))->with('success', 'Estúdio cadastrado com sucesso!');
     }
 
     /**
@@ -77,7 +77,7 @@ class EstudioController extends Controller
     {
         $estudio = Estudio::with('imagens')->findOrFail($id);
 
-        return view('estudios.show', compact('estudio'));
+        return view('admin.estudios.show', compact('estudio'));
     }
 
     /**
@@ -88,7 +88,7 @@ class EstudioController extends Controller
         $estudio = Estudio::findOrFail($id);
         $imagens = $estudio->imagens;
 
-        return view('estudios.edit', compact('estudio', 'imagens'));
+        return view('admin.estudios.edit', compact('estudio', 'imagens'));
     }
 
     /**
@@ -135,7 +135,7 @@ class EstudioController extends Controller
             return back()->with('error', 'Erro ao editar o estúdio. Tente novamente: ' . $e->getMessage());
         }
 
-        return redirect('/estudios')->with('success', 'Estúdio atualizado com sucesso!');
+        return redirect(route('admin.estudios.show', $estudio->id))->with('success', 'Estúdio atualizado com sucesso!');
     }
 
     /**
@@ -164,6 +164,6 @@ class EstudioController extends Controller
             return back()->with('error', 'Erro ao excluir o estúdio: ' . $e->getMessage());
         }
 
-        return redirect('/estudios')->with('success', 'Estúdio excluído com sucesso!');
+        return redirect(route('admin.estudios.index'))->with('success', 'Estúdio excluído com sucesso!');
     }
 }

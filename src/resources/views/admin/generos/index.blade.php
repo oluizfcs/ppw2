@@ -6,7 +6,7 @@
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="display-5">Gêneros</h1>
-            <a class="btn btn-primary btn-lg" href="/generos/create">Cadastrar Gênero</a>
+            <a class="btn btn-primary btn-lg" href="{{ route('admin.generos.create') }}">Cadastrar Gênero</a>
         </div>
         <div class="row g-3 justify-content-center">
             <div class="col-7">
@@ -26,10 +26,10 @@
                                 <td class="d-flex g-1">
                                     <div class="row justify-content-start">
                                         <div class="col">
-                                            <a class="btn btn-secondary" href="/generos/{{ $genero->id }}/edit">Editar</a>
+                                            <a class="btn btn-secondary" href="{{ route('admin.generos.edit', $genero->id) }}">Editar</a>
                                         </div>
                                         <div class="col">
-                                            <form action="/generos/{{ $genero->id }}" method="post">
+                                            <form action="{{ route('admin.generos.destroy', $genero->id) }}" method="post">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button class="btn btn-danger" type="submit">Excluir</button>

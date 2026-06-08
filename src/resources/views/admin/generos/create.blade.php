@@ -7,9 +7,9 @@
         <div class="row justify-content-center">
             <div class="col-md-6 col-sm-12">
                 <div class="display-4 text-center mb-2">Cadastrar Gênero</div>
-                <form action='/generos' method="POST" enctype="multipart/form-data" class="card p-5 needs-validation bg-dark border-secondary" novalidate>
+                <form action='{{ route('admin.generos.store') }}' method="POST" enctype="multipart/form-data" class="card p-5 needs-validation bg-dark border-secondary" novalidate>
                     @csrf
-                    @include('generos/form')
+                    @include('admin/generos/form')
                     <button type="submit" class="btn btn-primary mt-2">Cadastrar Gênero</button>
                 </form>
             </div>

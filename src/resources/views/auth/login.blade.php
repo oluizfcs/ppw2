@@ -26,6 +26,7 @@
                         </label>
                     </div>
                     <button type="submit" class="btn btn-primary">Entrar</button>
+                    <a href="/register" class="text-center mt-3">Cadastrar</a>
                     <a href="{{ route('password.request') }}" class="text-center mt-3">Esqueci minha senha</a>
                 </form>
             </div>

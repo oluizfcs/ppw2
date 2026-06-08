@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\GeneroRequest;
 use App\Models\Genero;
@@ -16,7 +16,7 @@ class GeneroController extends Controller
     {
         $generos = Genero::orderBy('nome')->paginate(5);
 
-        return view('generos.index', compact('generos'));
+        return view('admin.generos.index', compact('generos'));
     }
 
     /**
@@ -24,7 +24,7 @@ class GeneroController extends Controller
      */
     public function create()
     {
-        return view('generos.create');
+        return view('admin.generos.create');
     }
 
     /**
@@ -45,7 +45,7 @@ class GeneroController extends Controller
 
         $genero->save();
 
-        return redirect('/generos')->with('success', 'Gênero criado com sucesso!');
+        return redirect(route('admin.generos.index'))->with('success', 'Gênero criado com sucesso!');
     }
 
     /**
@@ -61,7 +61,7 @@ class GeneroController extends Controller
      */
     public function edit(string $id)
     {
-        return view('generos.edit', ['genero' => Genero::findOrFail($id)]);
+        return view('admin.generos.edit', ['genero' => Genero::findOrFail($id)]);
     }
 
     /**
@@ -83,7 +83,7 @@ class GeneroController extends Controller
 
         $genero->save();
 
-        return redirect('/generos')->with('success', 'Gênero atualizado com sucesso!');
+        return redirect(route('admin.generos.index'))->with('success', 'Gênero atualizado com sucesso!');
     }
 
     /**
@@ -97,6 +97,6 @@ class GeneroController extends Controller
 
         $genero->delete();
 
-        return redirect('/generos')->with('success', 'Gênero excluído com sucesso!');
+        return redirect(route('admin.generos.index'))->with('success', 'Gênero excluído com sucesso!');
     }
 }

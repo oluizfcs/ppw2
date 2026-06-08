@@ -1,5 +1,5 @@
 <div class="col-md-3">
-    <a href="/atores/{{ $ator['id'] }}">
+    <a href="{{ route('pessoas.show', $ator['id']) }}">
     <div class="card mb-2 bg-dark border-secondary">
         <div class="card-body">
             <img src="{{ asset('images/profile.png') }}" alt="" class="card-img-top img-fluid">

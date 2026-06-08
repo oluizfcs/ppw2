@@ -6,14 +6,14 @@
     <div class="container min-vh-100 mt-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="display-5 text-light m-0">Estúdios</h1>
-            <a class="btn btn-primary btn-lg" href="/estudios/create">Cadastrar Estúdio</a>
+            <a class="btn btn-primary btn-lg" href="{{ route('admin.estudios.create') }}">Cadastrar Estúdio</a>
         </div>
 
         <div class="row g-4">
             @forelse ($estudios as $estudio)
                 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
                     <div class="card bg-dark text-light border-secondary h-100 shadow-sm">
-                        <a href="/estudios/{{ $estudio->id }}" class="text-decoration-none text-light">
+                        <a href="{{ route('admin.estudios.show', $estudio->id) }}" class="text-decoration-none text-light">
                             @if ($estudio->imagens->isNotEmpty())
                                 <img src="{{ asset('storage/' . $estudio->imagens->first()->caminho) }}" 
                                      alt="Imagem de {{ $estudio->nome }}" 
@@ -47,11 +47,11 @@
                             <div class="pt-2 border-top border-secondary">
                                 <div class="row">
                                     <div class="col">
-                                        <a href="/estudios/{{ $estudio->id }}/edit"
+                                        <a href="{{ route('admin.estudios.edit', $estudio->id) }}"
                                             class="btn btn-outline-warning btn-sm w-100">Editar</a>
                                     </div>
                                     <div class="col">
-                                        <form action="/estudios/{{ $estudio->id }}" method="POST" class="d-inline"
+                                        <form action="{{ route('admin.estudios.destroy', $estudio->id) }}" method="POST" class="d-inline"
                                             onsubmit="return confirm('Tem certeza que deseja excluir este estúdio?');">
                                             @csrf
                                             @method('DELETE')
