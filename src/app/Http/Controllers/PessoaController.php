@@ -11,6 +11,6 @@ class PessoaController extends Controller
     {
         $pessoa = Pessoa::with('imagens')->findOrFail($id);
 
-        return view('admin.pessoas.show', compact('pessoa'));
+        return view('pessoas.show', compact('pessoa'));
     }
 }
