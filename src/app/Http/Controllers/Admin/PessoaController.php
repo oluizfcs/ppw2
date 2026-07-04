@@ -6,6 +6,11 @@ use App\Http\Requests\StorePessoaRequest;
 use App\Http\Requests\UpdatePessoaRequest;
 use App\Models\Pessoa;
 use App\Models\Imagem;
+use App\Models\Ator;
+use App\Models\Diretor;
+use App\Models\Produtor;
+use App\Models\Escritor;
+use App\Models\Filme;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -58,6 +63,9 @@ class PessoaController extends Controller
 
                 $pessoa->imagens()->attach($imagem->id);
             }
+
+            $this->sincronizarVinculosPessoa($pessoa, $request->input('vinculos', []));
+
             DB::commit();
         } catch (Exception $e) {
             Storage::disk('public')->delete($caminhosImagens);
@@ -110,7 +118,7 @@ class PessoaController extends Controller
         $dados['caminhos_imagens'] = $caminhosImagens;
 
         try {
-            DB::transaction(function () use ($pessoa, $dados) {
+            DB::transaction(function () use ($pessoa, $dados, $request) {
                 $pessoa->update($dados);
 
                 if (!empty($dados['caminhos_imagens'])) {
@@ -122,6 +130,27 @@ class PessoaController extends Controller
                         $pessoa->imagens()->attach($imagem->id);
                     }
                 }
+
+                // 1. Remover vínculos marcados
+                foreach ($request->input('remover_vinculos', []) as $role => $filmeIds) {
+                    if ($pessoa->$role) {
+                        $pessoa->$role->filmes()->detach($filmeIds);
+                    }
+                }
+
+                // 2. Atualizar papel dos atores existentes
+                foreach ($request->input('vinculos_existentes', []) as $role => $filmes) {
+                    if ($role === 'ator' && $pessoa->ator) {
+                        foreach ($filmes as $filmeId => $data) {
+                            $pessoa->ator->filmes()->updateExistingPivot($filmeId, [
+                                'papel' => $data['papel'] ?? 'Sem Papel'
+                            ]);
+                        }
+                    }
+                }
+
+                // 3. Adicionar novos vínculos
+                $this->sincronizarVinculosPessoa($pessoa, $request->input('vinculos', []));
             });
         } catch (Exception $e) {
             if (!empty($caminhosImagens)) {
@@ -214,9 +243,40 @@ class PessoaController extends Controller
             return [
                 'id' => $p->id,
                 'nome' => $p->nome,
-                'foto' => $p->foto_url,
+                'foto' => $p->imagens()->exists() ? asset('storage/' . $p->imagens[0]->caminho) : null,
                 'vinculos' => $vinculos
             ];
         }));
+    }
+
+    private function sincronizarVinculosPessoa(Pessoa $pessoa, array $vinculos): void
+    {
+        foreach ($vinculos as $v) {
+            $filmeId = $v['filme_id'] ?? null;
+            $tipo = $v['tipo'] ?? null;
+            $papel = $v['papel'] ?? null;
+            if (!$filmeId || !$tipo) continue;
+
+            switch ($tipo) {
+                case 'ator':
+                    $ator = Ator::firstOrCreate(['pessoa_id' => $pessoa->id]);
+                    $ator->filmes()->syncWithoutDetaching([
+                        $filmeId => ['papel' => $papel]
+                    ]);
+                    break;
+                case 'diretor':
+                    $diretor = Diretor::firstOrCreate(['pessoa_id' => $pessoa->id]);
+                    $diretor->filmes()->syncWithoutDetaching([$filmeId]);
+                    break;
+                case 'produtor':
+                    $produtor = Produtor::firstOrCreate(['pessoa_id' => $pessoa->id]);
+                    $produtor->filmes()->syncWithoutDetaching([$filmeId]);
+                    break;
+                case 'escritor':
+                    $escritor = Escritor::firstOrCreate(['pessoa_id' => $pessoa->id]);
+                    $escritor->filmes()->syncWithoutDetaching([$filmeId]);
+                    break;
+            }
+        }
     }
 }

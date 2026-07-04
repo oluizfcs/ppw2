@@ -62,7 +62,7 @@ class Filme extends Model
         return $this->belongsToMany(Genero::class);
     }
 
-    public function poster(): Imagem
+    public function poster(): Imagem|null
     {
         return $this->imagens->filter(fn($img) => $img->pivot->poster)->first();
     }

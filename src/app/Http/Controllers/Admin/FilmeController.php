@@ -265,6 +265,41 @@ class FilmeController extends Controller
         return redirect(route('admin.filmes.index'))->with('success', 'Filme excluído com sucesso!');
     }
 
+    public function buscar(Request $request)
+    {
+        $termo = trim($request->input('q', ''));
+        $pessoaId = $request->input('pessoa_id');
+        if (strlen($termo) < 2) {
+            return response()->json([]);
+        }
+        $filmes = Filme::with('imagens')
+            ->where('nome', 'ilike', "%{$termo}%")
+            ->limit(8)
+            ->get(['id', 'nome']);
+        return response()->json($filmes->map(function ($f) use ($pessoaId) {
+            $vinculos = [];
+            if ($pessoaId) {
+                $pessoa = Pessoa::find($pessoaId);
+                if ($pessoa) {
+                    if ($pessoa->ator && $f->atores()->where('ator_id', $pessoa->ator->id)->exists())
+                        $vinculos[] = 'ator';
+                    if ($pessoa->diretor && $f->diretores()->where('diretor_id', $pessoa->diretor->id)->exists())
+                        $vinculos[] = 'diretor';
+                    if ($pessoa->produtor && $f->produtores()->where('produtor_id', $pessoa->produtor->id)->exists())
+                        $vinculos[] = 'produtor';
+                    if ($pessoa->escritor && $f->escritores()->where('escritor_id', $pessoa->escritor->id)->exists())
+                        $vinculos[] = 'escritor';
+                }
+            }
+            return [
+                'id' => $f->id,
+                'nome' => $f->nome,
+                'foto' => $f->poster()?->caminho ? asset('storage/' . $f->poster()->caminho) : null,
+                'vinculos' => $vinculos,
+            ];
+        }));
+    }
+
     private function sincronizarVinculos(Filme $filme, array $vinculos): void
     {
         foreach ($vinculos as $v) {

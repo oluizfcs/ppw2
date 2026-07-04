@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function () {
         ->prefix('admin')
         ->name('admin.')
         ->group(function () {
+            Route::get('/filmes/buscar', [FilmeController::class, 'buscar']);
             Route::resource('filmes', FilmeController::class);
             Route::resource('generos', GeneroController::class);
             Route::get('/pessoas/buscar', [PessoaController::class, 'buscar']);

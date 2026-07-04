@@ -120,7 +120,11 @@
             <input type="text" class="form-control mb-2 campo-busca" placeholder="Buscar pelo nome da pessoa...">
             <div class="lista-resultados list-group mb-2"></div>
             <input type="hidden" name="" class="campo-pessoa-id">
-            <span class="nome-pessoa text-muted small"></span>
+            <div class="d-flex mb-1">
+                <img class="foto-pessoa rounded-circle ms-2 me-2" style="max-width: 42px" alt=""
+                    aria-hidden="true">
+                <span class="nome-pessoa fs-3"></span>
+            </div>
             <select name="" class="form-select form-select-sm mb-2 campo-tipo">
                 <option value="ator">Ator</option>
                 <option value="diretor">Diretor</option>
@@ -337,6 +341,12 @@
                             card.querySelector('.campo-pessoa-id').value = p.id;
                             card.querySelector('.campo-busca').value = '';
                             card.querySelector('.nome-pessoa').textContent = ' ' + p.nome;
+                            if (p.foto != null) {
+                                card.querySelector('.foto-pessoa').style.display = 'block';
+                                card.querySelector('.foto-pessoa').src = p.foto
+                            } else {
+                                card.querySelector('.foto-pessoa').style.display = 'none';
+                            }
                             lista.innerHTML = ''; // fecha a lista
                         });
                         lista.appendChild(item);
