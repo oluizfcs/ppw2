@@ -3,51 +3,83 @@
 @section('titulo', 'Moviestar - Pessoas')
 
 @section('conteudo')
-    <div class="container min-vh-100 mt-4">
+    <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="display-5">Pessoas</h1>
-            <a class="btn btn-primary btn-lg" href="{{ route('admin.pessoas.create') }}">Cadastrar Pessoa</a>
+            <h1 class="h3 fw-bold">Pessoas</h1>
+            <a href="{{ route('admin.pessoas.create') }}" class="btn btn-primary">Nova Pessoa</a>
         </div>
-
-        <div class="row g-4">
-            @forelse ($pessoas as $pessoa)
-                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
-                    <div class="card bg-dark text-light border-secondary h-100 shadow-sm">
-                        <a href="{{ route('admin.pessoas.show', $pessoa->id) }}" class="text-decoration-none text-light">
-                            <img src="{{ asset($pessoa->imagens->isNotEmpty() ? 'storage/' . $pessoa->imagens->first()->caminho : 'images/profile.png') }}"
-                                alt="Foto de {{ $pessoa->nome }}" class="img-fluid rounded shadow-sm mb-3"
-                                style="width: 100%; max-height: 450px; object-fit: cover;">
-                        </a>
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title font-weight-bold mb-1">{{ $pessoa->nome }}</h5>
-                            <div class="pt-2 border-top border-secondary">
-                                <div class="row">
-                                    <div class="col">
-                                        <a href="{{ route('admin.pessoas.edit', $pessoa->id) }}"
-                                            class="btn btn-outline-warning btn-sm w-100">Editar</a>
-                                    </div>
-                                    <div class="col">
-                                        <form action="{{ route('admin.pessoas.destroy', $pessoa->id) }}" method="POST" class="d-inline"
-                                            onsubmit="return confirm('Tem certeza que deseja excluir esta pessoa?');">
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Nome</th>
+                                <th>CPF</th>
+                                <th>Data de Nascimento</th>
+                                <th>Nacionalidade</th>
+                                <th class="text-end">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($pessoas as $pessoa)
+                                <tr>
+                                    <td>{{ $pessoa->nome }}</td>
+                                    <td>{{ $pessoa->cpf }}</td>
+                                    <td>{{ $pessoa->data_nascimento }}</td>
+                                    <td>{{ $pessoa->nacionalidade }}</td>
+                                    <td class="text-end">
+                                        <a href="{{ route('admin.pessoas.show', $pessoa) }}"
+                                            class="btn btn-sm btn-outline-info me-1">Ver</a>
+                                        <a href="{{ route('admin.pessoas.edit', $pessoa) }}"
+                                            class="btn btn-sm btn-outline-warning me-1">Editar</a>
+                                        <form action="{{ route('admin.pessoas.destroy', $pessoa) }}" method="POST"
+                                            class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-outline-danger btn-sm w-100">Excluir</button>
+                                            <button type="submit"
+                                                class="btn btn-sm btn-outline-danger me-1">Excluir</button>
                                         </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
-            @empty
-                <div class="col-12 text-center py-5">
-                    <p class="fs-5 text-muted">Nenhuma pessoa encontrada.</p>
-                </div>
-            @endforelse
+            </div>
         </div>
-
-        <div class="d-flex justify-content-center mt-5">
+        <div class="d-flex justify-content-center mt-4">
             {{ $pessoas->links() }}
         </div>
     </div>
+
+    @if (session('confirm_deletion'))
+        <div class="modal fade" id="confirmModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirmar Exclusão</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        {{ session('creditos_msg') }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <form action="{{ route('admin.pessoas.destroy', session('pessoa_id')) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <input type="hidden" name="confirm" value="1">
+                            <button type="submit" class="btn btn-danger">Sim, excluir</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                new bootstrap.Modal('#confirmModal').show();
+            });
+        </script>
+    @endif
 @endsection

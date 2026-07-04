@@ -31,7 +31,7 @@
                                     <td>{{ $filme->duracao }}</td>
                                     <td>{{ $filme->data_lancamento }}</td>
                                     <td>{{ $filme->classificacao }}</td>
-                                    <td>{{ $filme->sinopse }}</td>
+                                    <td>{{ mb_strimwidth($filme->sinopse, 0, 50, '...') }}</td>
                                     <td class="text-end">
                                         <a href="{{ route('admin.filmes.show', $filme) }}"
                                             class="btn btn-sm btn-outline-info me-1">Ver</a>

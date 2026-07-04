@@ -1,53 +1,76 @@
 @extends('layouts.app')
 
-@section('titulo', 'Moviestar - generos')
+@section('titulo', 'Moviestar - Gêneros')
 
 @section('conteudo')
-    <div class="container">
+    <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="display-5">Gêneros</h1>
-            <a class="btn btn-primary btn-lg" href="{{ route('admin.generos.create') }}">Cadastrar Gênero</a>
+            <h1 class="h3 fw-bold">Gêneros</h1>
+            <a href="{{ route('admin.generos.create') }}" class="btn btn-primary">Novo Gênero</a>
         </div>
-        <div class="row g-3 justify-content-center">
-            <div class="col-7">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Nome</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($generos as $genero)
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead class="table-dark">
                             <tr>
-                                <td>{{ $genero->id }}</td>
-                                <td>{{ ucfirst($genero->nome) }}</td>
-                                <td class="d-flex g-1">
-                                    <div class="row justify-content-start">
-                                        <div class="col">
-                                            <a class="btn btn-secondary" href="{{ route('admin.generos.edit', $genero->id) }}">Editar</a>
-                                        </div>
-                                        <div class="col">
-                                            <form action="{{ route('admin.generos.destroy', $genero->id) }}" method="post">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn btn-danger" type="submit">Excluir</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </td>
+                                <th>Nome</th>
+                                <th class="text-end">Ações</th>
                             </tr>
-                        @empty
-                            <div class="col-12 text-center py-5">
-                                <p class="fs-5 text-muted">Nenhum gênero encontrado.</p>
-                            </div>
-                        @endforelse
-                    </tbody>
-                </table>
-                <div class="d-flex justify-content-center mt-4">
-                    {{ $generos->links() }}
+                        </thead>
+                        <tbody>
+                            @foreach ($generos as $genero)
+                                <tr>
+                                    <td>{{ ucwords($genero->nome) }}</td>
+                                    <td class="text-end">
+                                        <a href="{{ route('admin.generos.edit', $genero) }}"
+                                            class="btn btn-sm btn-outline-warning me-1">Editar</a>
+                                        <form action="{{ route('admin.generos.destroy', $genero) }}" method="POST"
+                                            class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Excluir</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    @endsection
+        <div class="d-flex justify-content-center mt-4">
+            {{ $generos->links() }}
+        </div>
+    </div>
+
+    @if (session('confirm_deletion'))
+        <div class="modal fade" id="confirmModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirmar Exclusão</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        {{ session('filmes_msg') }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <form action="{{ route('admin.generos.destroy', session('genero_id')) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <input type="hidden" name="confirm" value="1">
+                            <button type="submit" class="btn btn-danger">Sim, excluir</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                new bootstrap.Modal('#confirmModal').show();
+            });
+        </script>
+    @endif
+@endsection

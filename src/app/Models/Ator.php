@@ -21,6 +21,6 @@ class Ator extends Model
 
     public function filmes(): BelongsToMany
     {
-        return $this->belongsToMany(Filme::class);
+        return $this->belongsToMany(Filme::class)->withPivot('papel');
     }
 }

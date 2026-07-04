@@ -93,6 +93,18 @@ class GeneroController extends Controller
     {
         $genero = Genero::findOrFail($id);
 
+        $filmesCount = $genero->filmes()->count();
+
+        if ($filmesCount > 0 && !request()->boolean('confirm')) {
+            $msg = "Este gênero está associado a {$filmesCount} " . ($filmesCount > 1 ? 'filmes' : 'filme') . ". Realmente deseja excluí-lo?";
+
+            return back()->with([
+                'confirm_deletion' => true,
+                'genero_id' => $genero->id,
+                'filmes_msg' => $msg,
+            ]);
+        }
+
         $genero->filmes()->detach();
 
         $genero->delete();

@@ -141,6 +141,34 @@ class PessoaController extends Controller
     {
         $pessoa = Pessoa::findOrFail($id);
 
+        $atorCount = $pessoa->ator()->count();
+        $diretorCount = $pessoa->diretor()->count();
+        $produtorCount = $pessoa->produtor()->count();
+        $escritorCount = $pessoa->escritor()->count();
+
+        $creditos = [];
+
+        if ($atorCount > 0) {
+            $creditos[] = "{$atorCount} " . ($atorCount > 1 ? "atuações" : "atuação");
+        }
+        if ($diretorCount > 0) {
+            $creditos[] = "{$diretorCount} " . ($diretorCount > 1 ? "direções" : "direção");
+        }
+        if ($produtorCount > 0) {
+            $creditos[] = "{$produtorCount} " . ($produtorCount > 1 ? "produções" : "produção");
+        }
+        if ($escritorCount > 0) {
+            $creditos[] = "{$escritorCount} " . ($escritorCount > 1 ? "roteiros" : "roteiro");
+        }
+
+        if (!empty($creditos) && !request()->boolean('confirm')) {
+            return back()->with([
+                'confirm_deletion' => true,
+                'pessoa_id' => $pessoa->id,
+                'creditos_msg' => "Esta pessoa possui " . implode(', ', $creditos) . ". Realmente deseja excluí-la?",
+            ]);
+        }
+
         try {
             DB::transaction(function () use ($pessoa) {
                 $imagens = $pessoa->imagens;
