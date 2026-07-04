@@ -6,8 +6,8 @@
     <div class="container">
         <div class="row mt-3">
             <div class="col-md-3">
-                <img src="{{ asset('storage/' . $filme->imagens[0]->caminho) }}"
-                    alt="Poster de {{ $filme->imagens[0]->nome }}" class="img-fluid">
+                <img src="{{ asset('storage/' . $filme->poster()->caminho) }}" alt="Poster de {{ $filme->poster()->nome }}"
+                    class="img-fluid">
                 <p class="mb-0">Duração: {{ $filme->duracao }}</p>
                 <p class="mb-0">Classificação: {{ $filme->classificacao }}</p>
                 <p class="mb-0">Gêneros: {{ implode(', ', $generos) }}</p>
@@ -237,8 +237,8 @@
 
         function renderizarAvaliacoes(avaliacoes) {
             const container = document.getElementById('avaliacoes-container');
-            
-            if(avaliacoes.length === 0) {
+
+            if (avaliacoes.length === 0) {
                 container.textContent = "Nenhuma avaliação encontrada";
                 return;
             }

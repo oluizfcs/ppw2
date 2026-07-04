@@ -18,10 +18,10 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        if (User::all()->count() == 0) {        
+        if (User::all()->count() == 0) {
             User::factory()->create([
-                'name' => 'Test User',
-                'email' => 'test@example.com',
+                'name' => 'Admin',
+                'email' => 'admin@admin.com',
                 'password' => Hash::make('123'),
                 'admin' => true
             ]);

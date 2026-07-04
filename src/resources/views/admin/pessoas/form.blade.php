@@ -27,15 +27,8 @@
 </div>
 
 <div class="form-floating mb-3">
-    <select class="form-control @error('genero') is-invalid @enderror" id="genero" name="genero">
-        <option value="" disabled {{ old('genero', $pessoa->genero ?? '') == '' ? 'selected' : '' }}>Selecione o
-            Gênero</option>
-        <option {{ old('genero', $pessoa->genero ?? '') == 'Masculino' ? 'selected' : '' }} value="Masculino">Masculino
-        </option>
-        <option {{ old('genero', $pessoa->genero ?? '') == 'Feminino' ? 'selected' : '' }} value="Feminino">Feminino
-        </option>
-        <option {{ old('genero', $pessoa->genero ?? '') == 'Outro' ? 'selected' : '' }} value="Outro">Outro</option>
-    </select>
+    <input type="text" class="form-control @error('genero') is-invalid @enderror" id="genero" name="genero"
+        value="{{ old('genero', $pessoa->genero ?? 'x') }}" placeholder="Genero">
     <label for="genero">Gênero:</label>
     @error('genero')
         <div class="invalid-feedback">{{ $message }}</div>

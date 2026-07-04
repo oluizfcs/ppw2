@@ -15,12 +15,8 @@ class ImagemController extends Controller
     {
         $filme->imagens()->detach($imagem->id);
 
-        $usos = $imagem->filmes()->count() + $imagem->pessoa()->count() + $imagem->estudios()->count();
-
-        if ($usos === 0) {
-            Storage::disk('public')->delete($imagem->caminho);
-            $imagem->delete();
-        }
+        Storage::disk('public')->delete($imagem->caminho);
+        $imagem->delete();
 
         return response()->json(['message' => 'Imagem removida!'], 200);
     }

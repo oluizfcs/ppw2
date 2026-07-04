@@ -28,7 +28,7 @@ class StorePessoaRequest extends FormRequest
             'biografia' => 'required|string|max:2000',
             'genero' => 'required|string|max:10',
             'nacionalidade' => 'required|string|max:45',
-            'imagens' => 'required|array|min:1|max:5',
+            'imagens' => 'sometimes|array',
             'imagens.*' => 'image|mimes:jpeg,png,webp|max:2048'
         ];
     }

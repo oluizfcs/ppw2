@@ -26,31 +26,18 @@ class UpdateFilmeRequest extends FormRequest
             'nome' => 'required|string|min:2|max:255',
             'duracao' => 'required|integer|min:1',
             'sinopse' => 'nullable|string|max:2000',
-            'classificacao' => 'nullable|string|max:45',
+            'classificacao' => 'required|string|max:45',
             'data_lancamento' => 'required|date|date_format:Y-m-d',
-            'poster' => 'sometimes|image|mimes:jpeg,png,webp|max:2048',
-            'imagens' => 'sometimes|array|min:1|max:5',
+            'imagens' => 'sometimes|array|min:1',
             'imagens.*' => 'image|mimes:jpeg,png,webp|max:2048',
-            'generos' => 'required|array|min:1',
+            'poster_index' => 'nullable|integer|min:0',
+            'generos' => 'sometimes|array|min:1',
             'estudios' => 'sometimes|array',
             'estudios.*' => 'exists:estudio,id',
-            // 'diretores' => 'sometimes|array',
-            // 'diretores.*' => 'exists:pessoa,id',
-            // 'produtores' => 'sometimes|array',
-            // 'produtores.*' => 'exists:pessoa,id',
-            // 'escritores' => 'sometimes|array',
-            // 'escritores.*' => 'exists:pessoa,id',
-            // 'atores' => 'sometimes|array',
-            // 'atores.*' => 'exists:pessoa,id',
-            // 'papeis' => 'sometimes|array',
-            // 'papeis.*' => 'required|string|max:45'
-
             'vinculos' => 'nullable|array',
             'vinculos.*.pessoa_id' => 'required_with:vinculos|integer|exists:pessoa,id',
             'vinculos.*.tipo' => 'required_with:vinculos|in:ator,diretor,produtor,escritor',
-            'vinculos.*.papel' => 'sometimes|max:100',
-
-
+            'vinculos.*.papel' => 'sometimes|max:45',
             'remover_vinculos' => 'nullable|array',
             'remover_vinculos.atores' => 'nullable|array',
             'remover_vinculos.atores.*' => 'integer|exists:ator,id',
@@ -60,10 +47,8 @@ class UpdateFilmeRequest extends FormRequest
             'remover_vinculos.produtores.*' => 'integer|exists:produtor,id',
             'remover_vinculos.escritores' => 'nullable|array',
             'remover_vinculos.escritores.*' => 'integer|exists:escritor,id',
-            
             'atores_existentes' => 'nullable|array',
-            'atores_existentes.*.papel' => 'sometimes|max:100',
-
+            'atores_existentes.*.papel' => 'sometimes|max:45',
         ];
     }
 }

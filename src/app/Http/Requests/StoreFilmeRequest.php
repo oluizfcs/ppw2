@@ -27,32 +27,18 @@ class StoreFilmeRequest extends FormRequest
             'nome' => 'required|string|min:2|max:255',
             'duracao' => 'required|integer|min:1',
             'sinopse' => 'nullable|string|max:2000',
-            'classificacao' => 'required
-            |string|max:45',
+            'classificacao' => 'required|string|max:45',
             'data_lancamento' => 'required|date|date_format:Y-m-d',
-            'poster' => 'required|image|mimes:jpeg,png,webp|max:2048',
-            'imagens' => 'required|array|min:1|max:5',
+            'imagens' => 'required|array|min:1',
             'imagens.*' => 'image|mimes:jpeg,png,webp|max:2048',
-            'generos' => 'required|array|min:1',
+            'poster_index' => 'nullable|integer|min:0',
+            'generos' => 'sometimes|array',
             'estudios' => 'sometimes|array',
             'estudios.*' => 'exists:estudio,id',
-            // 'diretores' => 'sometimes|array',
-            // 'diretores.*' => 'exists:pessoa,id',
-            // 'produtores' => 'sometimes|array',
-            // 'produtores.*' => 'exists:pessoa,id',
-            // 'escritores' => 'sometimes|array',
-            // 'escritores.*' => 'exists:pessoa,id',
-            // 'atores' => 'sometimes|array',
-            // 'atores.*' => 'exists:pessoa,id',
-            // 'papeis' => 'sometimes|array',
-            // 'papeis.*' => 'required|string|max:45'
-
-            
             'vinculos' => 'nullable|array',
             'vinculos.*.pessoa_id' => 'required_with:vinculos|integer|exists:pessoa,id',
             'vinculos.*.tipo' => 'required_with:vinculos|in:ator,diretor,produtor,escritor',
             'vinculos.*.papel' => 'nullable|string|max:45',
-
         ];
     }
 
@@ -65,12 +51,9 @@ class StoreFilmeRequest extends FormRequest
             'duracao.required' => 'O campo duração é obrigatório',
             'duracao.min' => 'O filme deve ter pelo menos 1 segundo de duração',
             'data_lancamento' => 'O campo data de lançamento é obrigatório',
-            'poster' => 'O poster é obrigatório',
-            'imagens.max' => 'Máximo de 5 imagens por vez.',
+            'imagens.required' => 'Adicione ao menos uma imagem',
             'imagens.*.image' => 'Todos os arquivos devem ser imagens.',
             'imagens.*.max' => 'Cada imagem pode ter no máximo 2 MB.',
-            'generos.min' => 'Informe ao menos um gênero',
-            'generos.required' => 'Informe ao menos um gênero'
         ];
     }
 }

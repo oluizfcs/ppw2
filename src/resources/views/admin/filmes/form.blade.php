@@ -12,8 +12,8 @@
 </div>
 <div class="form-floating mb-3">
     <input type="number" class="form-control @error('duracao') is-invalid @enderror" id="duracao" name="duracao"
-        value="{{ old('duracao', $filme->duracao ?? '123') }}" placeholder>
-    <label for="duracao">Duração em segundos:</label>
+        value="{{ old('duracao', $filme->duracao ?? '125') }}" placeholder>
+    <label for="duracao">Duração em minutos:</label>
     @error('duracao')
         <div class="invalid-feedback">{{ $message }}</div>
     @enderror
@@ -29,17 +29,19 @@
 </div>
 <div class="form-floating mb-3">
     <select class="form-control @error('classificacao') is-invalid @enderror" id="classificacao" name="classificacao">
-        <option {{ old('classificacao', $filme->classificacao ?? 'l') == 'l' ? 'selected' : '' }} value="l">L
+        <option {{ old('classificacao', $filme->classificacao ?? 'L') == 'L' ? 'selected' : '' }} value="L">L
         </option>
-        <option {{ old('classificacao', $filme->classificacao ?? 'l') == '10' ? 'selected' : '' }} value="10">10
+        <option {{ old('classificacao', $filme->classificacao ?? 'L') == '6' ? 'selected' : '' }} value="6">6
         </option>
-        <option {{ old('classificacao', $filme->classificacao ?? 'l') == '12' ? 'selected' : '' }} value="12">12
+        <option {{ old('classificacao', $filme->classificacao ?? 'L') == '10' ? 'selected' : '' }} value="10">10
         </option>
-        <option {{ old('classificacao', $filme->classificacao ?? 'l') == '14' ? 'selected' : '' }} value="14">14
+        <option {{ old('classificacao', $filme->classificacao ?? 'L') == '12' ? 'selected' : '' }} value="12">12
         </option>
-        <option {{ old('classificacao', $filme->classificacao ?? 'l') == '16' ? 'selected' : '' }} value="16">16
+        <option {{ old('classificacao', $filme->classificacao ?? 'L') == '14' ? 'selected' : '' }} value="14">14
         </option>
-        <option {{ old('classificacao', $filme->classificacao ?? 'l') == '18' ? 'selected' : '' }} value="18">18
+        <option {{ old('classificacao', $filme->classificacao ?? 'L') == '16' ? 'selected' : '' }} value="16">16
+        </option>
+        <option {{ old('classificacao', $filme->classificacao ?? 'L') == '18' ? 'selected' : '' }} value="18">18
         </option>
     </select>
     <label for="classificacao">Classificação</label>
@@ -92,8 +94,8 @@
                     <span>{{ $item->pessoa->nome }}</span>
                     @if ($config['temPersonagem'])
                         <input type="text" name="atores_existentes[{{ $item->id }}][papel]"
-                            value="{{ $item->pivot->papel }}" class="form-control form-control-sm"
-                            style="width:180px" placeholder="papel">
+                            value="{{ $item->pivot->papel }}" class="form-control form-control-sm" style="width:180px"
+                            placeholder="papel">
                     @endif
                     {{-- Marcador para remoção --}}
                     <input type="checkbox" name="remover_vinculos[{{ $relacao }}][]" value="{{ $item->id }}"
@@ -134,109 +136,47 @@
     </div>
 </template>
 
-
-{{-- <div class="form-group mb-3">
-    <label for="diretores">Diretores</label>
-    <select name="diretores[]" class="form-control @error('diretores') is-invalid @enderror" multiple id="diretores">
-        @foreach ($pessoas as $id => $nome)
-            <option {{ in_array($id, old('diretores', $diretoresDesteFilme ?? [])) ? 'selected' : '' }}
-                value="{{ $id }}">{{ $nome }}</option>
-        @endforeach
-    </select>
-    @error('diretores')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
-
-<div class="form-group mb-3">
-    <label for="produtores">Produtores</label>
-    <select name="produtores[]" class="form-control @error('produtores') is-invalid @enderror" multiple id="produtores">
-        @foreach ($pessoas as $id => $nome)
-            <option {{ in_array($id, old('produtores', $produtoresDesteFilme ?? [])) ? 'selected' : '' }}
-                value="{{ $id }}">{{ $nome }}</option>
-        @endforeach
-    </select>
-    @error('produtores')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
-
-<div class="form-group mb-3">
-    <label for="escritores">Escritores</label>
-    <select name="escritores[]" class="form-control @error('escritores') is-invalid @enderror" multiple id="escritores">
-        @foreach ($pessoas as $id => $nome)
-            <option {{ in_array($id, old('escritores', $escritoresDesteFilme ?? [])) ? 'selected' : '' }}
-                value="{{ $id }}">{{ $nome }}</option>
-        @endforeach
-    </select>
-    @error('escritores')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
-
-<div class="form-group mb-3">
-    <label for="atores">Atores</label>
-    <select name="atores[]" class="form-control @error('atores') is-invalid @enderror" multiple id="atores">
-        @foreach ($pessoas as $id => $nome)
-            <option
-                {{ in_array($id, old('atores', isset($atoresDesteFilme) ? array_keys($atoresDesteFilme) : [])) ? 'selected' : '' }}
-                value="{{ $id }}">{{ $nome }}</option>
-        @endforeach
-    </select>
-    @error('atores')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
-
-<div id="papeis-atores" class="mb-3">
-    @if (isset($atoresDesteFilme))
-        @foreach ($atoresDesteFilme as $atorId => $papel)
-            @php
-                $nome = $pessoas[$atorId] ?? 'Ator';
-            @endphp
-            <div class="papel-input-group mb-2 d-flex align-items-center gap-2" data-id="{{ $atorId }}">
-                <span class="text-light" style="min-width: 120px;">{{ $nome }}:</span>
-                <input type="text" name="papeis[{{ $atorId }}]"
-                    class="form-control @error('papeis.' . $atorId) is-invalid @enderror"
-                    placeholder="Papel" value="{{ old('papeis.' . $atorId, $papel) }}" required>
-                @error('papeis.' . $atorId)
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-        @endforeach
-    @endif
-</div> --}}
-<hr>
-<div class="form-group mb-3">
-    <label for="poster">Poster</label>
-    @if (isset($filme) && $filme->imagens->isNotEmpty())
-        <br>
-        <img src="{{ asset('storage/' . $poster->caminho) }}" class="img-thumbnail mb-1" style="width: 130px"
-            alt="poster do filme">
-    @endif
-    <input type="file" class="form-control @error('poster') is-invalid @enderror" id="poster" name="poster">
-    @error('poster')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
-<label for="campos-imagem">Outras imagens</label>
+{{-- Bloco de imagens existentes — só aparece na edição --}}
 @if (isset($filme) && $filme->imagens->isNotEmpty())
     <div class="mb-4">
+        <label class="form-label fw-bold">Imagens cadastradas</label>
         <div class="d-flex flex-wrap gap-3">
-            @foreach ($outrasImagens as $imagem)
-                <div id="img-{{ $imagem->id }}" class="text-center" style="width: 130px">
+            @foreach ($filme->imagens as $imagem)
+                <div id="img-{{ $imagem->id }}" class="text-center campo-imagem" style="width: 130px">
                     <img src="{{ asset('storage/' . $imagem->caminho) }}" class="img-thumbnail mb-1"
                         style="height: 90px; object-fit: cover">
+                    {{-- Radio para definir como poster --}}
+                    <div class="form-check form-check-inline">
+                        <label class="form-check-label small">
+                            <input class="form-check-input" type="radio" name="poster_index"
+                                {{ $imagem->pivot->poster ? 'checked' : '' }}>
+                            Poster
+                        </label>
+                    </div>
                     {{-- Botão de remoção individual --}}
-                    <button type="button" onclick="excluirImagem({{ $imagem->id }}, {{ $filme->id }})"
-                        class="btn btn-outline-danger btn-sm w-100">Remover</button>
+                    <button type="button"
+                        onclick="excluirImagem({{ $imagem->id }}, {{ $filme->id }})"class="btn btn-outline-danger btn-sm w-100">
+                        Remover
+                    </button>
                 </div>
             @endforeach
         </div>
     </div>
 @endif
-<div id="campos-imagem" class="mt-2"></div>
-<button type="button" id="btn-adicionar" class="btn btn-secondary mt-2">Adicionar Imagem</button>
+
+<hr>
+{{-- Container que recebe os novos campos --}}
+<div id="campos-imagem">
+    <div class="campo-imagem mb-2 d-flex align-items-center gap-2">
+        <input type="file" name="imagens[]" class="form-control" accept="image/jpeg,image/png,image/webp">
+        <label class="mb-0">
+            <input type="radio" class="form-check-input" name="poster_index"> Poster
+        </label>
+    </div>
+</div>
+<button type="button" id="btn-adicionar" class="btn btn-outline-secondary btn-sm">
+    + Adicionar imagem
+</button>
 
 @push('scripts')
     <script>
@@ -274,114 +214,34 @@
                     }
                 });
             }
-
-            // new TomSelect('#diretores', {
-            //     plugins: ['remove_button'],
-            //     create: false,
-            //     sortField: {
-            //         field: 'text',
-            //         direction: 'asc'
-            //     },
-            //     render: {
-            //         no_results: function(data, escape) {
-            //             return '<div class="no-results">Nenhum diretor encontrado</div>';
-            //         },
-            //     }
-            // });
-
-            // new TomSelect('#produtores', {
-            //     plugins: ['remove_button'],
-            //     create: false,
-            //     sortField: {
-            //         field: 'text',
-            //         direction: 'asc'
-            //     },
-            //     render: {
-            //         no_results: function(data, escape) {
-            //             return '<div class="no-results">Nenhum produtor encontrado</div>';
-            //         },
-            //     }
-            // });
-
-            // new TomSelect('#escritores', {
-            //     plugins: ['remove_button'],
-            //     create: false,
-            //     sortField: {
-            //         field: 'text',
-            //         direction: 'asc'
-            //     },
-            //     render: {
-            //         no_results: function(data, escape) {
-            //             return '<div class="no-results">Nenhum escritor encontrado</div>';
-            //         },
-            //     }
-            // });
-
-            // const tomSelectAtores = new TomSelect('#atores', {
-            //     plugins: ['remove_button'],
-            //     create: false,
-            //     sortField: {
-            //         field: 'text',
-            //         direction: 'asc'
-            //     },
-            //     onChange: function(values) {
-            //         updatePapeisInputs(values);
-            //     },
-            //     render: {
-            //         no_results: function(data, escape) {
-            //             return '<div class="no-results">Nenhum ator encontrado</div>';
-            //         },
-            //     }
-            // });
-
-            // const papeisContainer = document.getElementById('papeis-atores');
-
-            // function updatePapeisInputs(selectedIds) {
-            //     const renderedDivs = papeisContainer.querySelectorAll('.papel-input-group');
-            //     const renderedIds = Array.from(renderedDivs).map(div => div.dataset.id);
-
-            //     renderedDivs.forEach(div => {
-            //         if (!selectedIds.includes(div.dataset.id)) {
-            //             div.remove();
-            //         }
-            //     });
-
-            //     selectedIds.forEach(id => {
-            //         if (!renderedIds.includes(id)) {
-            //             const option = tomSelectAtores.options[id];
-            //             const nome = option ? option.text : 'Ator';
-
-            //             const div = document.createElement('div');
-            //             div.className = 'papel-input-group mb-2 d-flex align-items-center gap-2';
-            //             div.dataset.id = id;
-            //             div.innerHTML =
-            //                 `
-        //                 <span class="text-light" style="min-width: 120px;">${nome}:</span>
-        //                 <input type="text" name="papeis[${id}]" class="form-control" placeholder="Papel" required>`;
-            //             papeisContainer.appendChild(div);
-            //         }
-            //     });
-            // }
         });
 
-        const containerImagens = document.getElementById('campos-imagem');
-        const btnAdicionar = document.getElementById('btn-adicionar');
+        const containerImg = document.getElementById('campos-imagem');
+        const btnAdicionarImg = document.getElementById('btn-adicionar');
         let indiceImg = 1;
-        const MAX_FOTOS = 5;
-        btnAdicionar.addEventListener('click', () => {
-            if (indiceImg > MAX_FOTOS) {
-                alert('Máximo de ' + MAX_FOTOS + ' imagens.');
-                return;
-            }
+
+        function reindexarCampos() {
+            const campos = document.querySelectorAll('.campo-imagem');
+            campos.forEach((campo, i) => {
+                const radio = campo.querySelector('input[name="poster_index"]');
+                if (radio) radio.value = i;
+            });
+        }
+
+        document.getElementById("form-movie").addEventListener("submit", reindexarCampos);
+
+        btnAdicionarImg.addEventListener('click', () => {
             const div = document.createElement('div');
             div.className = 'campo-imagem mb-2 d-flex align-items-center gap-2';
             div.innerHTML = `
-                <input type="file" name="imagens[]" class="form-control"
-                accept="image/jpeg,image/png,image/webp">
-                <button type="button" class="btn btn-sm btn-outline-danger"
-                onclick="this.closest('.campo-imagem').remove(); indiceImg--;">✕</button>`;
-            containerImagens.appendChild(div);
-            indiceImg++;
+            <input type="file" name="imagens[]" class="form-control"
+            accept="image/jpeg,image/png,image/webp">
+            <label class="mb-0">
+            <input type="radio" name="poster_index" value="${indiceImg}"> Poster
+            </label>
+            <button type="button" class="btn btn-sm btn-outline-danger"
+            onclick="this.closest('.campo-imagem').remove();">✕</button>`;
+            containerImg.appendChild(div);
         });
 
         async function excluirImagem(imagemId, filmeId) {
@@ -389,7 +249,7 @@
                 return;
             }
 
-            const response = await fetch(`/imagens/${imagemId}/filme/${filmeId}`, {
+            const response = await fetch(`/admin/imagens/${imagemId}/filme/${filmeId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -401,7 +261,8 @@
             if (!response.ok) {
                 alert("Falha ao excluir imagem");
             } else {
-                alert("Imagem removida!");
+                const data = await response.json();
+                alert(data.message);
                 document.getElementById("img-" + imagemId).remove();
             }
         }
@@ -449,7 +310,7 @@
                 lista.innerHTML = '';
                 return;
             }
-            fetch(`/pessoas/buscar?q=${encodeURIComponent(termo)}&filme_id=${filmeId ?? ''}`, {
+            fetch(`/admin/pessoas/buscar?q=${encodeURIComponent(termo)}&filme_id=${filmeId ?? ''}`, {
                     headers: {
                         'Accept': 'application/json'
                     }
@@ -458,7 +319,8 @@
                 .then(pessoas => {
                     lista.innerHTML = '';
                     if (pessoas.length === 0) {
-                        lista.innerHTML = '<span class="list-group-item text-muted">Nenhum resultado</span>';
+                        lista.innerHTML =
+                            '<span class="list-group-item text-muted">Nenhum resultado</span>';
                         return;
                     }
                     pessoas.forEach(p => {
