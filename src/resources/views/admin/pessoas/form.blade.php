@@ -159,7 +159,7 @@
                 return;
             }
 
-            const response = await fetch(`/imagens/${imagemId}/pessoa/${pessoaId}`, {
+            const response = await fetch(`/admin/imagens/${imagemId}/pessoa/${pessoaId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -175,7 +175,6 @@
                 if (containerImg) {
                     containerImg.remove();
                 }
-                alert("Imagem removida!");
             }
         }
 

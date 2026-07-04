@@ -266,7 +266,6 @@
                 alert("Falha ao excluir imagem");
             } else {
                 const data = await response.json();
-                alert(data.message);
                 document.getElementById("img-" + imagemId).remove();
             }
         }

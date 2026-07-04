@@ -3,21 +3,80 @@
 @section('titulo', 'Moviestar - ' . $pessoa->nome)
 
 @section('conteudo')
-    <div class="container min-vh-100 mt-4 col-lg-8">
-        <div class="row">
-            <div class="clearfix">
-                <img src="{{ asset($pessoa->imagens->isNotEmpty() ? 'storage/' . $pessoa->imagens->first()->caminho : 'images/profile.png') }}"
-                    alt="Foto de {{ $pessoa->nome }}" class="img-fluid rounded shadow-sm mb-3 float-start"
-                    style="width: 20%; max-height: 450px; object-fit: cover; margin: 10px;">
-                    <h1 class="mb-3">{{ $pessoa->nome }}</h1>
-                    <span>{{ $pessoa->biografia }} Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ad expedita, explicabo perspiciatis neque optio quo ullam error quibusdam facere. Voluptate labore sit eveniet totam delectus culpa, dolor similique vitae molestias! Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim magni porro sed atque non tenetur amet, veniam autem quas iusto omnis quod ad doloribus temporibus eligendi voluptatum consequuntur ab pariatur. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Accusantium, quibusdam fugiat dignissimos in mollitia, nulla quidem, expedita libero suscipit deserunt labore repudiandae aspernatur earum et? Et quidem molestias nam sint? Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ratione voluptatem dolorem deserunt a nesciunt nobis atque laboriosam perspiciatis facilis, ipsam quasi nam ipsum suscipit harum temporibus consequatur itaque delectus doloremque.</span>
-            </div>
-            <hr>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 fw-bold">Pessoa</h1>
             <div>
-                <h2>Atuou em</h2>
-                <h2>Dirigiu</h2>
-                <h2>Escreveu</h2>
-                <h2>Produziu</h2>
+                @auth
+                    @if (auth()->user()->isAdmin())
+                        <a href="{{ route('admin.pessoas.show', $pessoa) }}" class="btn btn-outline-secondary me-2">Ver no Painel
+                            Administrativo</a>
+                    @endif
+                @endauth
+                <a href="{{ url()->previous() }}" class="btn btn-outline-secondary">Voltar</a>
+            </div>
+        </div>
+
+        @if (session('notice'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('notice') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
+        @endif
+
+        <div class="card shadow-sm border-secondary">
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <div class="clearfix">
+                        @if ($pessoa->imagens->isNotEmpty())
+                            <img src="{{ asset('storage/' . $pessoa->imagens->first()->caminho) }}"
+                                alt="Foto de {{ $pessoa->nome }}" class="float-start img-thumbnail"
+                                style="max-width: 300px; margin-right: 1rem">
+                        @else
+                            <img src="{{ asset('images/profile.png') }}" alt="Foto de {{ $pessoa->nome }}"
+                                class="float-start img-thumbnail" style="max-width: 300px; margin-right: 1rem">
+                        @endif
+                        <h1 class="display-2">{{ $pessoa->nome }}</h1>
+                        {{ $pessoa->biografia }}
+                    </div>
+                </dl>
+
+                @isset($credits['ator'])
+                    @include('partials.lista-cards', [
+                        'listLabel' => 'Atuou em',
+                        'cardList' => $credits['ator'],
+                    ])
+                @endisset
+
+                @isset($credits['diretor'])
+                    @include('partials.lista-cards', [
+                        'listLabel' => 'Dirigiu',
+                        'cardList' => $credits['diretor'],
+                    ])
+                @endisset
+
+                @isset($credits['escritor'])
+                    @include('partials.lista-cards', [
+                        'listLabel' => 'Escreveu',
+                        'cardList' => $credits['escritor'],
+                    ])
+                @endisset
+
+                @isset($credits['produtor'])
+                    @include('partials.lista-cards', [
+                        'listLabel' => 'Produziu',
+                        'cardList' => $credits['produtor'],
+                    ])
+                @endisset
+
+                @if ($pessoa->imagens->count() > 1)
+                    <hr>
+                    <p class="fs-3 fw-bold">Fotos ({{ $pessoa->imagens->count() - 1 }})</p>
+                    @foreach ($pessoa->imagens->skip(1) as $imagem)
+                        <img src="{{ asset('storage/' . $imagem->caminho) }}" alt=""
+                            style="max-width: 300px; border-radius: 6px;">
+                    @endforeach
+                @endif
             </div>
         </div>
     </div>
