@@ -43,10 +43,10 @@
                 @endforelse
             </div>
             <div class="card-footer text-end">
-                <form action="{{ route('admin.filmes.destroy', $filme) }}" method="POST"
-                    onsubmit="return confirm('Tem certeza que deseja excluir este filme?')">
+                <form action="{{ route('admin.filmes.destroy', $filme) }}" method="POST">
                     @csrf
                     @method('DELETE')
+                    <input type="hidden" name="confirm" value="1">
                     <button type="submit" class="btn btn-danger">Excluir</button>
                 </form>
             </div>

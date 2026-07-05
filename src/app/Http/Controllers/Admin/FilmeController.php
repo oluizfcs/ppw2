@@ -232,6 +232,16 @@ class FilmeController extends Controller
     {
         $filme = Filme::findOrFail($id);
 
+        $avaliacaoCount = $filme->avaliacoes()->count();
+
+        if ($avaliacaoCount > 0 && !request()->boolean('confirm')) {
+            return back()->with([
+                'confirm_deletion' => true,
+                'filme_id' => $filme->id,
+                'avaliacoes_msg' => "Este filme possui {$avaliacaoCount} " . ($avaliacaoCount > 1 ? 'avaliações' : 'avaliação') . ". Realmente deseja excluí-lo?",
+            ]);
+        }
+
         try {
             DB::transaction(function () use ($filme) {
                 $filme->avaliacoes()->delete();

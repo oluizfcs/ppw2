@@ -26,8 +26,7 @@
                                 <a href="{{ route('admin.filmes.edit', $filme) }}"
                                     class="btn btn-sm btn-outline-warning me-1">Editar</a>
                                 <form action="{{ route('admin.filmes.destroy', $filme) }}" method="POST"
-                                    class="d-inline"
-                                    onsubmit="return confirm('Tem certeza que deseja excluir este filme?');">
+                                    class="d-inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-outline-danger me-1">Excluir</button>

@@ -17,7 +17,7 @@ class PessoaFactory extends Factory
             'data_nascimento' => fake()->date('Y-m-d', '2010-10-10'),
             'biografia' => fake()->paragraphs(3, true),
             'genero' => fake()->text('10'),
-            'nacionalidade' => fake('pt_BR')->country(),
+            'nacionalidade' => fake()->countryCode(),
         ];
     }
 

@@ -41,8 +41,7 @@
                 @endforelse
             </div>
             <div class="card-footer text-end">
-                <form action="{{ route('admin.pessoas.destroy', $pessoa) }}" method="POST"
-                    onsubmit="return confirm('Tem certeza que deseja excluir esta pessoa?')">
+                <form action="{{ route('admin.pessoas.destroy', $pessoa) }}" method="POST">
                     @csrf
                     @method('DELETE')
                     <input type="hidden" name="confirm" value="1">
