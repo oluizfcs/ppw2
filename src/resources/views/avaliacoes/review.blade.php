@@ -37,7 +37,7 @@
                                 data-bs-target="#edit-review-modal-{{ $avaliacao->id }}"
                                 class="btn btn-sm btn-outline-primary">Editar</button>
                         @endif
-                        <form action="{{ route('avaliacoes.destroy', $filme) }}" method="POST" class="d-inline"
+                        <form action="{{ route('avaliacoes.destroy', $avaliacao->id) }}" method="POST" class="d-inline"
                             onsubmit="return confirm('Você tem certeza?')">
                             @csrf
                             @method('DELETE')

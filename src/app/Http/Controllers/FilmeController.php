@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class FilmeController extends Controller
 {
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
         $filme = Filme::with([
             'imagens',
@@ -20,9 +20,6 @@ class FilmeController extends Controller
             'generos',
         ])->findOrFail($id);
 
-        $generos = array_map('ucfirst', $filme->generos->pluck('nome')->toArray());
-        $estudios = $filme->estudios->pluck('nome')->toArray();
-
         $elenco = $filme->atores->map(fn($ator) => [
             'title'    => $ator->pessoa->nome,
             'subtitle' => 'Como: ' . $ator->pivot->papel ?? null,
@@ -33,8 +30,13 @@ class FilmeController extends Controller
         ])->toArray();
 
         $avaliacoes = $filme->avaliacoes()->with('usuario.fotoPerfil')
+            ->where('usuario_id', '!=', auth()->id())
             ->orderBy('created_at', 'desc')
             ->paginate(5);
+
+        if ($request->ajax()) {
+            return view('filmes._avaliacoes', compact('filme', 'elenco', 'avaliacoes'));
+        }
 
         $userReview = null;
         $review = null;
@@ -42,14 +44,12 @@ class FilmeController extends Controller
             $userReview = $filme->avaliacoes()
                 ->where('usuario_id', auth()->id())
                 ->first();
-            $review = new Avaliacao();
+            $review = $userReview ?? new Avaliacao();
         }
 
         return view('filmes.show', compact(
             'filme',
             'avaliacoes',
-            'generos',
-            'estudios',
             'elenco',
             'userReview',
             'review'

@@ -69,7 +69,7 @@ class Filme extends Model
 
     public function displayGeneros($limit = null): String
     {
-        return implode(", ", array_slice($this->generos->pluck("nome")->all(), 0, $limit));
+        return implode(", ", array_map('ucwords', array_slice($this->generos->pluck("nome")->all(), 0, $limit)));
     }
 
     public function displayEstudios($limit = null): String

@@ -49,7 +49,7 @@
 
                 <dl class="row mt-3 mb-0">
                     <dt class="col-sm-3 text-muted">Gêneros</dt>
-                    <dd class="col-sm-9">{{ implode(', ', $generos) }}</dd>
+                    <dd class="col-sm-9">{{ $filme->displayGeneros() }}</dd>
 
                     <dt class="col-sm-3 text-muted">Lançamento</dt>
                     <dd class="col-sm-9">{{ \Carbon\Carbon::parse($filme->data_lancamento)->format('d/m/Y') }}</dd>
@@ -61,11 +61,7 @@
                     <dd class="col-sm-9">{{ $filme->classificacao }}</dd>
 
                     <dt class="col-sm-3 text-muted">Estúdios</dt>
-                    <dd class="col-sm-9">
-                        @foreach ($filme->estudios as $estudio)
-                            {{ $estudio->nome }}{{ !$loop->last ? ', ' : '' }}
-                        @endforeach
-                    </dd>
+                    <dd class="col-sm-9">{{ $filme->displayEstudios() }}</dd>
                 </dl>
 
                 <hr>
@@ -125,13 +121,8 @@
 
                 <h2>Avaliações dos usuários</h2>
                 @if ($avaliacoes->count() > 0)
-                    <div id="reviews_list">
-                        @foreach ($avaliacoes as $avaliacao)
-                            @include('avaliacoes.review', ['avaliacao' => $avaliacao])
-                        @endforeach
-                        <div class="d-flex justify-content-center mt-4">
-                            {{ $avaliacoes->links() }}
-                        </div>
+                    <div id="container-paginar">
+                        @include('filmes._avaliacoes')
                     </div>
                 @elseif (auth()->check() && $userReview)
                     <p>Só você avaliou este filme por enquanto.</p>
@@ -161,3 +152,7 @@
         </div>
     @endif
 @endsection
+
+@if ($avaliacoes->count() > 0)
+    @vite('resources/js/pagination.js')
+@endif

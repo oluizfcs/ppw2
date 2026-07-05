@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('titulo')->nullable();
             $table->text('descricao')->nullable();
             $table->timestamps();
+            $table->unique(['filme_id', 'usuario_id']);
         });
     }
 

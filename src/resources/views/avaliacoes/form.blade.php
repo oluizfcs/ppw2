@@ -1,7 +1,8 @@
 @auth
     <div class="card p-5">
         <h2>{{ $title ?? 'Deixe sua avaliação' }}</h2>
-        <form method="POST" action="{{ route('avaliacoes.store') }}">
+        <form method="POST" action="{{ $avaliacao->exists ? route('avaliacoes.update', $avaliacao) : route('avaliacoes.store') }}">
+            @if ($avaliacao->exists) @method('PUT') @endif
             @csrf
             <input type="hidden" name="usuario_id" value="{{ auth()->id() }}">
             <input type="hidden" name="filme_id" value="{{ $filme->id }}">
