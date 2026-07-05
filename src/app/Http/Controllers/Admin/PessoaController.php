@@ -10,7 +10,6 @@ use App\Models\Ator;
 use App\Models\Diretor;
 use App\Models\Produtor;
 use App\Models\Escritor;
-use App\Models\Filme;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -21,9 +20,13 @@ class PessoaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $pessoas = Pessoa::with('imagens')->paginate(4);
+        $pessoas = Pessoa::with('imagens')->paginate(5);
+
+        if ($request->ajax()) {
+            return view('admin.pessoas._table', compact('pessoas'));
+        }
 
         return view('admin.pessoas.index', compact('pessoas'));
     }

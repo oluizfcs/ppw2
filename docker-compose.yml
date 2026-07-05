@@ -26,6 +26,7 @@ services:
       - ./src/tests:/var/www/html/tests
       - ./src/artisan:/var/www/html/artisan
       - storage_files:/var/www/html/storage
+      - ./storage/app/public/imagens:/var/www/html/storage/app/public/imagens
     depends_on:
       - postgres
     environment:

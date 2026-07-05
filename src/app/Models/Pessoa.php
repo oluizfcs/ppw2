@@ -73,6 +73,6 @@ class Pessoa extends Model
             }
         }
 
-        return implode(', ', $filmes);
+        return implode('<br>', $filmes);
     }
 }

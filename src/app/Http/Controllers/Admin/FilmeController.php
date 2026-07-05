@@ -19,20 +19,18 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Number;
-use Illuminate\Validation\ValidationException;
 
 class FilmeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $filmes = Filme::with(['imagens' => function ($query) {
             $query->wherePivot('poster', true);
-        }])->paginate(4);
+        }])->paginate(5);
 
-        // $filmes = Filme::with('imagens')->get();
-
-        // dd($filmes[0]);
-        // dd($filmes[0]->imagens);
+        if ($request->ajax()) {
+            return view('admin.filmes._table', compact('filmes'));
+        }
 
         return view('admin.filmes.index', compact('filmes'));
     }

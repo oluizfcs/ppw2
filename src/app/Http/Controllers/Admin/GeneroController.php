@@ -12,9 +12,13 @@ class GeneroController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $generos = Genero::orderBy('nome')->paginate(5);
+
+        if ($request->ajax()) {
+            return view('admin.generos._table', compact('generos'));
+        }
 
         return view('admin.generos.index', compact('generos'));
     }
