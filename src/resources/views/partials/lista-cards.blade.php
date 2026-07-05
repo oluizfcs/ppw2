@@ -7,7 +7,7 @@
             class="d-flex flex-column flex-sm-row align-items-center align-items-sm-start p-3 gap-3 border-secondary-subtle">
 
             <div class="flex-shrink-0">
-                <img src="{{ $item['img'] ?? asset('images/filme-card.png') }}" alt="Poster de {{ $item['title'] }}"
+                <img src="{{ $item['img'] ?? asset('images/filme-card.png') }}" alt=""
                     class="rounded-circle border border-1 border-secondary"
                     style="width: 80px; height: 80px; object-fit: cover;">
             </div>

@@ -6,6 +6,9 @@ $dark: #1a1a1a;
 
 @import "bootstrap/scss/bootstrap";
 
+$bootstrap-icons-font-dir: "bootstrap-icons/font/fonts";
+@import "bootstrap-icons/font/bootstrap-icons";
+
 $ts-pristine-bg: $input-bg;
 $ts-select-bg: $input-bg;
 $ts-tag-bg: $primary;
@@ -47,4 +50,8 @@ $ts-tag-border: 1px solid darkene($primary, 10%);
 
 #star {
     color: #ffac33;
+}
+
+hr {
+    border-top: 2.5px dashed;
 }

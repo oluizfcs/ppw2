@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAvaliacaoRequest;
 use App\Models\Avaliacao;
+use Exception;
 use Illuminate\Http\Request;
 
 class AvaliacaoController extends Controller
@@ -23,5 +25,41 @@ class AvaliacaoController extends Controller
             'next_page_url' => $avaliacoes->nextPageUrl(),
             'prev_page_url' => $avaliacoes->previousPageUrl(),
         ]);
+    }
+
+    public function store(StoreAvaliacaoRequest $request)
+    {
+        $dados = $request->validated();
+
+        Avaliacao::create($dados);
+
+        return back(201, fallback: '/')->with('success', 'Avaliação criada com sucesso!');
+    }
+
+    public function update(StoreAvaliacaoRequest $request, string $id)
+    {
+        $avaliacao = Avaliacao::findOrFail($id);
+        $dados = $request->validated();
+
+        try {
+            $avaliacao->update($dados);
+        } catch (Exception $e) {
+            return back()->with('error', 'Erro ao atualizar a avaliação. Tente novamente: ' . $e->getMessage());
+        }
+
+        return back()->with('success', 'Avaliação atualizada com sucesso!');
+    }
+
+    public function destroy(string $id)
+    {
+        $avaliacao = Avaliacao::findOrFail($id);
+
+        try {
+            $avaliacao->delete();
+        } catch (Exception $e) {
+            return back()->with('error', 'Erro ao excluir a avaliação. Tente novamente: ' . $e->getMessage());
+        }
+
+        return back()->with('success', 'Avaliação excluída com sucesso!');
     }
 }

@@ -16,7 +16,8 @@ return new class extends Migration
             $table->foreignId('filme_id')->constrained('filme');
             $table->foreignId('usuario_id')->constrained('users');
             $table->unsignedTinyInteger('nota');
-            $table->text('descricao');
+            $table->string('titulo')->nullable();
+            $table->text('descricao')->nullable();
             $table->timestamps();
         });
     }

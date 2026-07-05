@@ -77,6 +77,29 @@ class Filme extends Model
         return implode(", ", array_slice($this->estudios->pluck("nome")->all(), 0, $limit));
     }
 
+    public function displayNota(): string
+    {
+        return (string) round($this->avaliacoes()->avg('nota') ?? 0, 1);
+    }
+
+    public function displayDuracao(): string
+    {
+        if (!$this->duracao) {
+            return '';
+        }
+
+        $horas = intdiv($this->duracao, 60);
+        $minutos = $this->duracao % 60;
+
+        if ($horas > 0 && $minutos > 0) {
+            return "{$horas}h {$minutos}min";
+        } elseif ($horas > 0) {
+            return "{$horas}h";
+        }
+
+        return "{$minutos}min";
+    }
+
     public function displayPessoas(): String
     {
         $pessoas = [];
@@ -94,6 +117,6 @@ class Filme extends Model
             $pessoas[] = "<a href='" . route('admin.pessoas.show', $escritor->pessoa) . "'>{$escritor->pessoa->nome}</a> - escritor";
         }
 
-        return implode(', ', $pessoas);
+        return implode('<br>', $pessoas);
     }
 }
