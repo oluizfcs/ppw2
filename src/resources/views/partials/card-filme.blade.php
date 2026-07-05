@@ -1,12 +1,23 @@
-<div class="col-md-3">
-    <a href="{{ route('filmes.show', $filme['id']) }}">
-    <div class="card mb-2 bg-dark border-secondary">
-        <div class="card-body">
-            <img src="{{ asset('images/filme-card.png') }}" alt="" class="card-img-top img-fluid">
-            <div class="d-flex justify-content-between">
-                <strong>{{ $filme['nome'] }}</strong>
+<div class="col-12 col-sm-6 col-md-4 col-lg-3">
+    <a href="{{ route('filmes.show', $filme) }}" class="text-decoration-none">
+        <div class="card h-100 mb-3 bg-dark border-secondary hover-shadow">
+            @php
+                $poster = $filme->poster();
+            @endphp
+            <img src="{{ $poster ? asset('storage/' . $poster->caminho) : asset('images/filme-card.png') }}"
+                alt="Poster do filme {{ $filme->nome }}"
+                class="card-img-top object-fit-cover"
+                style="aspect-ratio: 5 / 6; width: 100%;">
+
+            <div class="card-body d-flex flex-column justify-content-between p-3">
+                <div class="d-flex justify-content-between align-items-start gap-2">
+                    <strong class="text-light fs-5 lh-sm text-truncate">{{ $filme->nome }}</strong>
+                    <div class="d-flex align-items-center text-warning gap-1 flex-shrink-0">
+                        <i class="bi bi-star-fill small"></i>
+                        <span class="fw-bold text-light">{{ $filme->displayNota() }}</span>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
     </a>
 </div>

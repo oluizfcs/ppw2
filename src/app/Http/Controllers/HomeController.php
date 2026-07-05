@@ -5,55 +5,84 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Filme;
 use App\Models\Pessoa;
-use App\Models\Estudio;
+use App\Models\Avaliacao;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        return view('home.index');
+        $atores = Pessoa::has('ator')
+            ->with('imagens')
+            ->inRandomOrder()
+            ->limit(3)
+            ->get();
+
+        $filmes = Filme::withCount('avaliacoes as reviews_count')
+            ->withAvg('avaliacoes', 'nota')
+            ->with('imagens')
+            ->orderByDesc('reviews_count')
+            ->orderByDesc('avaliacoes_avg_nota')
+            ->limit(3)
+            ->get();
+
+        $new_movies = Filme::with('imagens')
+            ->orderByDesc('data_lancamento')
+            ->limit(3)
+            ->get();
+
+        $avaliacoes = Avaliacao::with(['usuario', 'filme.imagens'])
+            ->orderByDesc('created_at')
+            ->limit(6)
+            ->get();
+
+        return view('home.index', compact('atores', 'filmes', 'new_movies', 'avaliacoes'));
     }
 
-        public function buscar(Request $request)
+    public function buscar(Request $request)
     {
-        $query = $request->input('search');
+        $query = trim($request->input('q'));
 
         if (empty($query)) {
             return redirect('/');
         }
 
-        $filmes = Filme::with(['imagens' => function ($query) {
-            $query->wherePivot('poster', true);
-        }])
-            ->where('nome', 'ILIKE', '%' . $query . '%')
-            ->orWhere('sinopse', 'ILIKE', '%' . $query . '%')
-            ->get();
-
-        $diretores = Pessoa::has('diretor')
+        $pessoas = Pessoa::where('nome', 'ILIKE', "%{$query}%")
+            ->orWhere('biografia', 'ILIKE', "%{$query}%")
             ->with('imagens')
-            ->where('nome', 'ILIKE', '%' . $query . '%')
-            ->get();
+            ->get()
+            ->map(function ($pessoa) {
+                $roles = [];
+                if ($pessoa->ator) $roles[] = 'Ator';
+                if ($pessoa->diretor) $roles[] = 'Diretor';
+                if ($pessoa->escritor) $roles[] = 'Escritor';
+                if ($pessoa->produtor) $roles[] = 'Produtor';
 
-        $atores = Pessoa::has('ator')
-            ->with('imagens')
-            ->where('nome', 'ILIKE', '%' . $query . '%')
-            ->get();
+                return [
+                    'title' => $pessoa->nome,
+                    'subtitle' => empty($roles) ? 'Nenhuma participação' : implode(' • ', $roles),
+                    'obj' => $pessoa,
+                    'img' => $pessoa->imagens->isNotEmpty()
+                        ? asset('storage/' . $pessoa->imagens->first()->caminho)
+                        : null,
+                ];
+            });
 
-        $escritores = Pessoa::has('escritor')
-            ->with('imagens')
-            ->where('nome', 'ILIKE', '%' . $query . '%')
-            ->get();
+        $filmes = Filme::where('nome', 'ILIKE', "%{$query}%")
+            ->orWhere('sinopse', 'ILIKE', "%{$query}%")
+            ->with(['imagens', 'generos'])
+            ->get()
+            ->map(function ($filme) {
+                $poster = $filme->poster();
+                return [
+                    'title' => $filme->nome,
+                    'subtitle' => "<i class='bi bi-star-fill'></i> {$filme->displayNota()} &bull; {$filme->displayGeneros(2)} &bull; " . ($filme->data_lancamento ? date('Y', strtotime($filme->data_lancamento)) : ''),
+                    'obj' => $filme,
+                    'img' => $poster
+                        ? asset('storage/' . $poster->caminho)
+                        : null,
+                ];
+            });
 
-        $produtores = Pessoa::has('produtor')
-            ->with('imagens')
-            ->where('nome', 'ILIKE', '%' . $query . '%')
-            ->get();
-
-        $estudios = Estudio::with('imagens')
-            ->where('nome', 'ILIKE', '%' . $query . '%')
-            ->orWhere('local', 'ILIKE', '%' . $query . '%')
-            ->get();
-
-        return view('home.busca', compact('query', 'filmes', 'diretores', 'atores', 'escritores', 'produtores', 'estudios'));
+        return view('home.busca', compact('query', 'pessoas', 'filmes'));
     }
 }

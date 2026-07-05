@@ -13,10 +13,10 @@
             </div>
 
             <div class="text-center text-sm-start w-100">
-                <p class="fw-bold mb-1 fs-5"><a href="{{ route('filmes.show', $item['obj']) }}">{{ $item['title'] }}</a>
+                <p class="fw-bold mb-1 fs-5"><a href="{{ route($routeName ?? 'filmes.show', $item['obj']) }}">{{ $item['title'] }}</a>
                 </p>
                 @if ($item['subtitle'])
-                    <p class="text-muted mb-0">{{ $item['subtitle'] }}</p>
+                    <p class="text-muted mb-0">{!! $item['subtitle'] !!}</p>
                 @endif
             </div>
         </div>

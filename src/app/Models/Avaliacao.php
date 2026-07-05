@@ -24,7 +24,7 @@ class Avaliacao extends Model
         return $this->belongsTo(User::class, 'usuario_id');
     }
 
-    public function filmes(): BelongsTo
+    public function filme(): BelongsTo
     {
         return $this->belongsTo(Filme::class);
     }

@@ -16,19 +16,23 @@
                             <a href="{{ route('admin.filmes.index') }}" class="nav-link px-2 link-body-emphasis">Filmes</a>
                         </li>
                         <li>
-                            <a href="{{ route('admin.pessoas.index') }}" class="nav-link px-2 link-body-emphasis">Pessoas</a>
+                            <a href="{{ route('admin.pessoas.index') }}"
+                                class="nav-link px-2 link-body-emphasis">Pessoas</a>
                         </li>
                         <li>
-                            <a href="{{ route('admin.generos.index') }}" class="nav-link px-2 link-body-emphasis">Gêneros</a>
+                            <a href="{{ route('admin.generos.index') }}"
+                                class="nav-link px-2 link-body-emphasis">Gêneros</a>
                         </li>
                         <li>
-                            <a href="{{ route('admin.estudios.index') }}" class="nav-link px-2 link-body-emphasis">Estúdios</a>
+                            <a href="{{ route('admin.estudios.index') }}"
+                                class="nav-link px-2 link-body-emphasis">Estúdios</a>
                         </li>
                     </ul>
                 @endif
             @endauth
             <form action="/buscar" method="GET" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                <input type="search" name="search" value="{{ request('search') }}" class="form-control" placeholder="Pesquisar..." aria-label="Search">
+                <input type="search" name="q" value="{{ request('q') }}" class="form-control"
+                    placeholder="Pesquisar..." aria-label="Search">
             </form>
             @auth
                 <div class="dropdown text-end">
