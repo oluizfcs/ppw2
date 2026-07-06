@@ -10,15 +10,20 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Filme;
 
 class EstudioController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $estudios = Estudio::with('imagens')->paginate(4);
+
+        if ($request->ajax()) {
+            return view('admin.estudios._table', compact('estudios'));
+        }
 
         return view('admin.estudios.index', compact('estudios'));
     }
@@ -28,7 +33,9 @@ class EstudioController extends Controller
      */
     public function create()
     {
-        return view('admin.estudios.create');
+        $filmes = Filme::all('id', 'nome')->pluck('nome', 'id');
+
+        return view('admin.estudios.create', compact('filmes'));
     }
 
     /**
@@ -38,7 +45,7 @@ class EstudioController extends Controller
     {
         $dados = $request->validated();
         $dados['local'] = $dados['local'] ?? '';
-        
+
         $imagens = $request->file('imagens', []);
         $caminhosImagens = [];
 
@@ -66,7 +73,9 @@ class EstudioController extends Controller
             DB::rollBack();
             return back()->with('error', 'Erro ao salvar o estúdio. Tente novamente: ' . $e->getMessage());
         }
-        
+
+        $estudio->filmes()->sync($request->input('filmes', []));
+
         return redirect(route('admin.estudios.show', $estudio->id))->with('success', 'Estúdio cadastrado com sucesso!');
     }
 
@@ -85,10 +94,12 @@ class EstudioController extends Controller
      */
     public function edit(string $id)
     {
-        $estudio = Estudio::findOrFail($id);
+        $estudio = Estudio::with('filmes')->findOrFail($id);
         $imagens = $estudio->imagens;
+        $filmes = Filme::all('id', 'nome')->pluck('nome', 'id');
+        $filmesDesteEstudio = $estudio->filmes->pluck('id')->toArray();
 
-        return view('admin.estudios.edit', compact('estudio', 'imagens'));
+        return view('admin.estudios.edit', compact('estudio', 'imagens', 'filmes', 'filmesDesteEstudio'));
     }
 
     /**
@@ -98,7 +109,7 @@ class EstudioController extends Controller
     {
         $dados = $request->validated();
         $dados['local'] = $dados['local'] ?? '';
-        
+
         $estudio = Estudio::findOrFail($id);
 
         $imagens = [];
@@ -116,6 +127,7 @@ class EstudioController extends Controller
         try {
             DB::transaction(function () use ($estudio, $dados) {
                 $estudio->update($dados);
+                $estudio->filmes()->sync($dados['filmes'] ?? []);
 
                 if (!empty($dados['caminhos_imagens'])) {
                     foreach ($dados['caminhos_imagens'] as $caminhoImagem) {
@@ -145,10 +157,21 @@ class EstudioController extends Controller
     {
         $estudio = Estudio::findOrFail($id);
 
+        $filmesCount = $estudio->filmes()->count();
+
+        if ($filmesCount > 0 && !request()->boolean('confirm')) {
+            return back()->with([
+                'confirm_deletion' => true,
+                'estudio_id' => $estudio->id,
+                'filmes_msg' => "Este estúdio possui {$filmesCount} " . ($filmesCount > 1 ? 'filmes vinculados' : 'filme vinculado') . ". Realmente deseja excluí-lo?",
+            ]);
+        }
+
         try {
             DB::transaction(function () use ($estudio) {
                 $imagens = $estudio->imagens;
                 $estudio->imagens()->detach();
+                $estudio->filmes()->detach();
 
                 foreach ($imagens as $imagem) {
                     $usos = $imagem->filmes()->count() + $imagem->pessoa()->count() + $imagem->estudios()->count();

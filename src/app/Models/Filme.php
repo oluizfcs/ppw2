@@ -74,7 +74,14 @@ class Filme extends Model
 
     public function displayEstudios($limit = null): String
     {
-        return implode(", ", array_slice($this->estudios->pluck("nome")->all(), 0, $limit));
+        $estudios = [];
+        foreach ($this->estudios as $estudio) {
+            $estudios[] = "<a href='" . route('estudios.show', $estudio) . "'>{$estudio->nome}</a>";
+        }
+        if ($limit !== null) {
+            $estudios = array_slice($estudios, 0, $limit);
+        }
+        return implode('<br>', $estudios);
     }
 
     public function displayNota(): string

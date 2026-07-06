@@ -61,7 +61,7 @@
                     <dd class="col-sm-9">{{ $filme->classificacao }}</dd>
 
                     <dt class="col-sm-3 text-muted">Estúdios</dt>
-                    <dd class="col-sm-9">{{ $filme->displayEstudios() }}</dd>
+                    <dd class="col-sm-9">{!! $filme->displayEstudios() !!}</dd>
                 </dl>
 
                 <hr>

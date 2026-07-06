@@ -16,6 +16,21 @@
     @enderror
 </div>
 
+@if (isset($filmes) && $filmes->isNotEmpty())
+    <div class="form-group mb-3">
+        <label for="filmes">Filmes</label>
+        <select name="filmes[]" class="form-control @error('filmes') is-invalid @enderror" multiple id="filmes">
+            @foreach ($filmes as $id => $nome)
+                <option {{ in_array($id, old('filmes', $filmesDesteEstudio ?? [])) ? 'selected' : '' }}
+                    value="{{ $id }}">{{ $nome }}</option>
+            @endforeach
+        </select>
+        @error('filmes')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+@endif
+
 <div class="form-group">
     <label class="form-label text-light">Imagens do Estúdio</label>
     @if (isset($estudio) && $estudio->imagens->isNotEmpty())
@@ -36,6 +51,24 @@
 
 @push('scripts')
     <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            if (document.getElementById('filmes')) {
+                new TomSelect('#filmes', {
+                    plugins: ['remove_button'],
+                    create: false,
+                    sortField: {
+                        field: 'text',
+                        direction: 'asc'
+                    },
+                    render: {
+                        no_results: function(data, escape) {
+                            return '<div class="no-results">Nenhum filme encontrado</div>';
+                        },
+                    }
+                });
+            }
+        });
+
         const container = document.getElementById('campos-imagem');
         const btnAdicionar = document.getElementById('btn-adicionar');
         const MAX_FOTOS = 5;
@@ -64,7 +97,7 @@
                 return;
             }
 
-            const response = await fetch(`/imagens/${imagemId}/estudio/${estudioId}`, {
+            const response = await fetch(`/admin/imagens/${imagemId}/estudio/${estudioId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

@@ -6,6 +6,7 @@ use App\Models\Ator;
 use App\Models\Avaliacao;
 use App\Models\Diretor;
 use App\Models\Escritor;
+use App\Models\Estudio;
 use App\Models\Filme;
 use App\Models\Imagem;
 use App\Models\Pessoa;
@@ -54,6 +55,8 @@ class DatabaseSeeder extends Seeder
         $this->attachImagensPessoas();
         $this->attachImagensFilmes();
         $this->attachPapeis();
+
+        $this->seedEstudios();
 
         $filmes = Filme::all();
         $users = User::all();
@@ -124,6 +127,16 @@ class DatabaseSeeder extends Seeder
                     'poster' => $i === 0,
                 ]);
             }
+        }
+    }
+
+    private function seedEstudios(): void
+    {
+        $estudios = Estudio::factory(15)->create();
+
+        foreach ($estudios as $estudio) {
+            $filmes = Filme::inRandomOrder()->take(rand(1, 10))->pluck('id');
+            $estudio->filmes()->attach($filmes);
         }
     }
 

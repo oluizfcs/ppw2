@@ -29,7 +29,7 @@
                     <dt class="col-sm-3 text-muted">Gêneros</dt>
                     <dd class="col-sm-9">{{ $filme->displayGeneros() }}</dd>
                     <dt class="col-sm-3 text-muted">Estúdios</dt>
-                    <dd class="col-sm-9">{{ $filme->displayEstudios() }}</dd>
+                    <dd class="col-sm-9">{!! $filme->displayEstudios() !!}</dd>
                     <dt class="col-sm-3 text-muted">Pessoas</dt>
                     <dd class="col-sm-9">{!! $filme->displayPessoas() !!}</dd>
                 </dl>
