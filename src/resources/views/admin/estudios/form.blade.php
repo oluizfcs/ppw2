@@ -113,7 +113,6 @@
                 if (containerImg) {
                     containerImg.remove();
                 }
-                alert("Imagem removida!");
             }
         }
     </script>

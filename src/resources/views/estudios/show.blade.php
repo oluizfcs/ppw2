@@ -17,13 +17,6 @@
             </div>
         </div>
 
-        @if (session('notice'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('notice') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-            </div>
-        @endif
-
         <div class="card shadow-sm border-secondary">
             <div class="card-body">
                 <dl class="row mb-0">

@@ -13,7 +13,7 @@ $ts-pristine-bg: $input-bg;
 $ts-select-bg: $input-bg;
 $ts-tag-bg: $primary;
 $ts-tag-color: $white;
-$ts-tag-border: 1px solid darkene($primary, 10%);
+$ts-tag-border: 1px solid darken($primary, 10%);
 
 
 @import "tom-select/src/scss/tom-select.bootstrap5";
@@ -41,15 +41,6 @@ $ts-tag-border: 1px solid darkene($primary, 10%);
 
 .brand-name {
     font-family: Bigbesty;
-    font-size: 2rem;
-}
-
-#movie {
-    color: #fff;
-}
-
-#star {
-    color: #ffac33;
 }
 
 hr {

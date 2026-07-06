@@ -1,6 +1,17 @@
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <h6 class="fw-bold">{{ $errors->count() }} erro(s) impediram o salvamento:</h6>
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <div class="form-floating mb-3">
     <input type="text" autofocus class="form-control @error('nome') is-invalid @enderror" id="nome" name="nome"
-        value="{{ old('nome', $pessoa->nome ?? 'Fulano') }}" placeholder="Nome completo">
+        value="{{ old('nome', $pessoa->nome ?? '') }}" placeholder="Nome completo">
     <label for="nome">Nome:</label>
     @error('nome')
         <div class="invalid-feedback">{{ $message }}</div>
@@ -9,7 +20,7 @@
 
 <div class="form-floating mb-3">
     <input type="text" class="form-control @error('cpf') is-invalid @enderror" id="cpf" name="cpf"
-        value="{{ old('cpf', $pessoa->cpf ?? '000.000.000-00') }}" placeholder="000.000.000-00">
+        value="{{ old('cpf', $pessoa->cpf ?? '') }}" placeholder="000.000.000-00">
     <label for="cpf">CPF:</label>
     @error('cpf')
         <div class="invalid-feedback">{{ $message }}</div>
@@ -18,7 +29,7 @@
 
 <div class="form-floating mb-3">
     <input type="date" class="form-control @error('data_nascimento') is-invalid @enderror" id="data_nascimento"
-        name="data_nascimento" value="{{ old('data_nascimento', $pessoa->data_nascimento ?? '1999-01-01') }}"
+        name="data_nascimento" value="{{ old('data_nascimento', $pessoa->data_nascimento ?? '') }}"
         placeholder="Data de Nascimento">
     <label for="data_nascimento">Data de Nascimento:</label>
     @error('data_nascimento')
@@ -28,7 +39,7 @@
 
 <div class="form-floating mb-3">
     <input type="text" class="form-control @error('genero') is-invalid @enderror" id="genero" name="genero"
-        value="{{ old('genero', $pessoa->genero ?? 'x') }}" placeholder="Genero">
+        value="{{ old('genero', $pessoa->genero ?? '') }}" placeholder="Genero">
     <label for="genero">Gênero:</label>
     @error('genero')
         <div class="invalid-feedback">{{ $message }}</div>
@@ -37,7 +48,7 @@
 
 <div class="form-floating mb-3">
     <input type="text" class="form-control @error('nacionalidade') is-invalid @enderror" id="nacionalidade"
-        name="nacionalidade" value="{{ old('nacionalidade', $pessoa->nacionalidade ?? 'Brasileira') }}"
+        name="nacionalidade" value="{{ old('nacionalidade', $pessoa->nacionalidade ?? '') }}"
         placeholder="Nacionalidade">
     <label for="nacionalidade">Nacionalidade:</label>
     @error('nacionalidade')
@@ -47,7 +58,7 @@
 
 <div class="form-floating mb-3">
     <textarea class="form-control @error('biografia') is-invalid @enderror" id="biografia" name="biografia"
-        style="height: 120px" placeholder="Biografia">{{ old('biografia', $pessoa->biografia ?? 'Nascido(a) em...') }}</textarea>
+        style="height: 120px" placeholder="Biografia">{{ old('biografia', $pessoa->biografia ?? '') }}</textarea>
     <label for="biografia">Biografia:</label>
     @error('biografia')
         <div class="invalid-feedback">{{ $message }}</div>

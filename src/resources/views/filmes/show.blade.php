@@ -4,20 +4,6 @@
 
 @section('conteudo')
     <div class="container mt-4">
-        @if (session('notice'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('notice') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-            </div>
-        @endif
-
-        @if (session('alert'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ session('alert') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-            </div>
-        @endif
-
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h3 fw-bold">Filme</h1>
             <div>

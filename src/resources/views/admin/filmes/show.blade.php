@@ -37,9 +37,9 @@
                 @forelse ($filme->imagens as $imagem)
                     <img src="{{ asset('storage/' . $imagem->caminho) }}" alt=""
                         class="{{ $imagem->pivot->poster ? 'border border-primary border-5' : '' }}"
-                        style="max-width: 300px; border-raidus: 6px;">
+                        style="max-width: 300px; border-radius: 6px;">
                 @empty
-                    <p>Nenuma foto cadastrada.</p>
+                    <p>Nenhuma foto cadastrada.</p>
                 @endforelse
             </div>
             <div class="card-footer text-end">

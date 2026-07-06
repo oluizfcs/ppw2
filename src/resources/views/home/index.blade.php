@@ -4,19 +4,6 @@
 
 @section('conteudo')
     <div class="container">
-        @if (session('alert'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ session('alert') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-            </div>
-        @endif
-        @if (session('notice'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('notice') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-            </div>
-        @endif
-
         <!-- Carrosel -->
         <div class="row justify-content-center">
             <div class="col-md-9 mt-2 mb-2">

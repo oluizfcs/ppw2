@@ -1,18 +1,29 @@
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <h6 class="fw-bold">{{ $errors->count() }} erro(s) impediram o salvamento:</h6>
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <div class="form-floating mb-3">
     <input type="text" autofocus class="form-control @error('nome') is-invalid @enderror" id="nome" name="nome"
-        value="{{ old('nome', $filme->nome ?? 'teste') }}" placeholder>
+        value="{{ old('nome', $filme->nome ?? '') }}" placeholder>
     <label for="nome">Nome:</label>
     @error('nome')
         <div class="invalid-feedback">{{ $message }}</div>
     @enderror
 </div>
 <div class="form-floating mb-3">
-    <textarea class="form-control @error('sinopse') is-invalid @enderror" id="sinopse" name="sinopse" placeholder>{{ old('sinopse', $filme->sinopse ?? 'teste') }}</textarea>
+    <textarea class="form-control @error('sinopse') is-invalid @enderror" id="sinopse" name="sinopse" placeholder>{{ old('sinopse', $filme->sinopse ?? '') }}</textarea>
     <label for="sinopse">Sinopse</label>
 </div>
 <div class="form-floating mb-3">
     <input type="number" class="form-control @error('duracao') is-invalid @enderror" id="duracao" name="duracao"
-        value="{{ old('duracao', $filme->duracao ?? '125') }}" placeholder>
+        value="{{ old('duracao', $filme->duracao ?? '') }}" placeholder>
     <label for="duracao">Duração em minutos:</label>
     @error('duracao')
         <div class="invalid-feedback">{{ $message }}</div>
@@ -20,8 +31,7 @@
 </div>
 <div class="form-floating mb-3">
     <input type="date" class="form-control @error('data_lancamento') is-invalid @enderror" id="data_lancamento"
-        name="data_lancamento" value="{{ old('data_lancamento', $filme->data_lancamento ?? '2010-10-10') }}"
-        placeholder>
+        name="data_lancamento" value="{{ old('data_lancamento', $filme->data_lancamento ?? '') }}" placeholder>
     <label for="data_lancamento">Data de lançamento</label>
     @error('data_lancamento')
         <div class="invalid-feedback">{{ $message }}</div>
@@ -172,7 +182,8 @@
 {{-- Container que recebe os novos campos --}}
 <div id="campos-imagem">
     <div class="campo-imagem mb-2 d-flex align-items-center gap-2">
-        <input type="file" name="imagens[]" class="form-control" accept="image/jpeg,image/png,image/webp">
+        <input type="file" name="imagens[]" class="form-control @error('imagens') is-invalid @enderror"
+            accept="image/jpeg,image/png,image/webp">
         <label class="mb-0">
             <input type="radio" class="form-check-input" name="poster_index"> Poster
         </label>
