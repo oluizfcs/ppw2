@@ -64,7 +64,8 @@
             </div>
             <div class="modal-footer border-top border-secondary justify-content-between">
                 <small class="text-secondary">Avaliado por:
-                    <strong>{{ $avaliacao->usuario?->name }}</strong></small>
+                    <a
+                        href="{{ route('profile.show', $avaliacao->usuario) }}">{{ $avaliacao->usuario?->name }}</a></small>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
             </div>
         </div>

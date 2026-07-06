@@ -12,7 +12,7 @@ class AvaliacaoFactory extends Factory
     public function definition(): array
     {
         return [
-            'nota' => fake()->numberBetween(1, 5),
+            'nota' => fake()->numberBetween(2, 5),
             'titulo' => fake()->sentence(2),
             'descricao' => fake()->paragraph(2),
         ];

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AvaliacaoController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\EstudioController as PublicEstudioController;
 use App\Http\Controllers\FilmeController as PublicFilmeController;
 use App\Http\Controllers\PessoaController as PublicPessoaController;
 use App\Http\Controllers\Admin\EstudioController;
@@ -16,6 +17,7 @@ Route::get('/', [HomeController::class, 'index']);
 Route::get('/buscar', [HomeController::class, 'buscar']);
 Route::get('/filmes/{id}', [PublicFilmeController::class, 'show'])->name('filmes.show');
 Route::get('/pessoas/{id}', [PublicPessoaController::class, 'show'])->name('pessoas.show');
+Route::get('/estudios/{id}', [PublicEstudioController::class, 'show'])->name('estudios.show');
 Route::get('/filmes/{id}/avaliacoes', [AvaliacaoController::class, 'index']);
 
 Route::middleware('auth')->group(function () {
@@ -35,11 +37,16 @@ Route::middleware('auth')->group(function () {
             Route::delete('/imagens/{imagem}/estudio/{estudio}', [ImagemController::class, 'destroyFromEstudio']);
         });
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile', function () {
+        return redirect()->route('profile.show', auth()->id());
+    })->name('profile');
+
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::resource('/avaliacoes', AvaliacaoController::class, ['only' => ['store', 'update', 'destroy']]);
 });
+
+Route::get('/profile/{id}', [ProfileController::class, 'show'])->name('profile.show');
 
 require __DIR__ . '/auth.php';

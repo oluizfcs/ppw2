@@ -1,15 +1,35 @@
 <div id="avaliacao-{{ $avaliacao->id }}" class="card shadow-sm border-secondary mb-3">
     <div class="card-body">
         <div class="clearfix p-2">
-            <div class="float-start me-3 mb-2">
-                <img src="{{ $avaliacao->usuario->getProfilePictureUrlPath() }}"
-                    alt="Foto de {{ $avaliacao->usuario->name }}" class="rounded-circle border border-1 border-secondary"
-                    style="width: 60px; height: 60px; object-fit: cover;">
-            </div>
+            @if (Str::startsWith(Route::currentRouteName(), 'filmes.'))
+                <div class="float-start me-3 mb-2">
+                    <img src="{{ $avaliacao->usuario->getProfilePictureUrlPath() }}"
+                        alt="Foto de {{ $avaliacao->usuario->name }}"
+                        class="rounded-circle border border-1 border-secondary"
+                        style="width: 60px; height: 60px; object-fit: cover;">
+                </div>
 
-            <div class="d-flex align-items-center gap-2 mb-1">
-                <h3 class="fs-5 mb-0">{{ $avaliacao->usuario->name }}</h3>
-            </div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <h3 class="fs-5 mb-0">{{ $avaliacao->usuario->name }}</h3>
+                </div>
+            @else
+                @php $poster = $avaliacao->filme->poster(); @endphp
+                <div class="float-start me-3 mb-2">
+                    <img src="{{ $poster ? asset('storage/' . $poster->caminho) : asset('images/star.png') }}"
+                        alt="Poster de {{ $avaliacao->filme->nome }}"
+                        class="rounded-circle border border-1 border-secondary"
+                        style="width: 60px; height: 60px; object-fit: cover;">
+                </div>
+
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <h3 class="fs-5 mb-0">
+                        <a href="{{ route('filmes.show', $avaliacao->filme) }}"
+                            class="text-decoration-none">{{ $avaliacao->filme->nome }}</a>
+                        <span style="color: #ffcd85">(<i class="bi bi-star-fill"></i>
+                            {{ $avaliacao->filme->displayNota() }})</span>
+                    </h3>
+                </div>
+            @endif
 
             @php $stars = max(1, min(5, (int) $avaliacao->nota)); @endphp
             <span class="small">

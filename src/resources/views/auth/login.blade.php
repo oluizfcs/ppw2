@@ -8,6 +8,16 @@
             <div class="col-md-6 col-sm-12">
                 <div class="display-4 text-center mb-2">Entrar</div>
                 <form action="/login" method="POST" class="card p-5 needs-validation bg-dark" novalidate>
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <h6 class="fw-bold">{{ $errors->count() }} erro(s) impediram o login:</h6>
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="email" name="email" value="{{ old('email') }}"
                             pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" autofocus required placeholder="seu@email.com">

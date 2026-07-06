@@ -20,7 +20,7 @@
 
             <div class="mb-3">
                 <label for="nota" class="form-label fw-semibold me-2">Nota</label>
-                <input type="hidden" name="nota" id="nota" class="form-control"
+                <input type="hidden" name="nota" class="form-control"
                     value="{{ old('nota', $avaliacao->nota ?? '') }}">
                 <span class="input-nota">
                     @for ($i = 0; $i < 5; $i++)
@@ -56,10 +56,9 @@
     </div>
 
     <script>
-        {
-            const form = document.querySelector('#nota').closest('form');
+        document.querySelectorAll('.input-nota').forEach((inputNota) => {
+            const form = inputNota.closest('form');
             const inputNotaHidden = form.querySelector('input[name="nota"]');
-            const inputNota = form.querySelector('.input-nota');
             const stars = inputNota.querySelectorAll('span');
             let clicked = false;
 
@@ -99,6 +98,6 @@
                 const el = inputNota.querySelector('[data-index="' + (parseInt(inputNotaHidden.value) - 1) + '"]');
                 if (el) el.click();
             }
-        }
+        });
     </script>
 @endauth
